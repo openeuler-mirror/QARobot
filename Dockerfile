@@ -10,6 +10,7 @@ RUN npm run build
 
 FROM nginx:1.21.5
 
+RUN sed -i 's/PASS_MAX_DAYS.*/PASS_MAX_DAYS   0/' /etc/login.defs
 RUN mkdir -p /opt/QARobot
 COPY --from=Builder /home/openeuler/QARobot/dist /opt/QARobot
 RUN chmod -R 755 /opt/QARobot
