@@ -27,3 +27,12 @@ export function getSuggestions(inputText) {
     platform: 'openEuler'
   });
 }
+export function getMoreDoc(inputText) {
+  return postRequest('/api-search/search/docs', {
+    keyword: inputText,
+    lang: 'zh',
+    page: 1,
+    pageSize: 12,
+    type: ''
+  });
+}

@@ -10,7 +10,7 @@
           <ul>
             <li v-for="(item, index) in msglist" :key="index">
               <RightItem :type="item.type" :content="item.content" v-if="item.me"></RightItem>
-              <LeftItem :type="item.type" :content="item.content" @getMsg="getMsg" v-else>
+              <LeftItem :type="item.type" :header="item.header" :content="item.content" :moreDoc="item.moreDoc" @badreq="badreq" @getMsg="getMsg" v-else>
               </LeftItem>
               <div v-scroll style="height: 0"></div>
             </li>
@@ -37,7 +37,7 @@
 
 <script>
 import defaultSettings from '@/config/defaultSettings.js';
-import { getAnswer, getSuggestions } from '@/api/post';
+import { getAnswer, getSuggestions, getMoreDoc } from '@/api/post';
 import LeftItem from '@/components/LeftItem';
 import RightItem from '@/components/RightItem';
 
@@ -46,12 +46,14 @@ export default {
   components: { LeftItem, RightItem },
   data: () => {
     return {
+      header: '',
       doneFlag: true,
       msgData: [],
       text: '',
       msg: '',
       msgType: '',
       msglist: [],
+      moreDoc: []
     };
   },
   directives: {
@@ -69,11 +71,6 @@ export default {
     },
   },
   created() {
-    console.log(window.location);
-    console.log(
-      window.location.search.substring(window.location.search.indexOf('=') + 1)
-    );
-    console.log(document.referrer);
   },
   mounted() {
     this.initData('welcome_tag');
@@ -138,12 +135,27 @@ export default {
     },
     initData(text) {
       if (this.doneFlag) {
+        this.doneFlag = false;
+        setTimeout(() => {
+          this.doneFlag = true;
+        }, defaultSettings.DefaultRequestInterval);
+        getMoreDoc(text).then((res) => {
+          if (res.status === 200 && res.obj) {
+            this.moreDoc = [];
+            res.obj.records.forEach((item) => {
+              item.title = item.title.replaceAll(
+                '<span>',
+                '<span style="color:#AD0D00">'
+              );
+              this.moreDoc.push(item);
+            });
+          } else {
+            this.moreDoc = [];
+          }
+        })
         getAnswer(text).then((res) => {
-          this.doneFlag = false;
-          setTimeout(() => {
-            this.doneFlag = true;
-          }, defaultSettings.DefaultRequestInterval);
           if (res.data && res.data[0]) {
+            this.header = '';
             if (res.data[0].answer_source === 'welcome_tag') {
               this.msgType = 0; // 首次进入小智界面所展示的数据类型
               this.msg = res.data[0].chatScriptContent;
@@ -156,13 +168,16 @@ export default {
             ) {
               this.msgType = 2; // 小智查找到问题相关信息所返回的数据类型
               this.msg = res.data[0].answer;
+              this.header = res.data[0].intent;
             } else {
               this.msgType = 3;
-              this.msg = res.data[0].related_ques
+              this.msg = res.data[0].related_ques;
             }
             this.msglist.push({
+              header: this.header,
               type: this.msgType,
               content: this.msg,
+              moreDoc: this.moreDoc,
               me: false,
             });
           }
@@ -176,6 +191,15 @@ export default {
       this.text = msg;
       this.send();
     },
+    badreq() {
+      this.msglist.push({
+        header: '',
+        type: 4,
+        content: '<p>小智没有回答您的问题？想要提出使用意见？欢迎点击链接向我们提问&amp;反馈！我们会尽快为您解答：<a href="https://isurvey.huawei.com/survey/#/privacy-page?p=U28753-fErYxf-bEx8Iw" target="_blank" rel="noopener">欧拉小智使用意见</a>&nbsp;</p>',
+        moreDoc: [],
+        me: false,
+      });
+    }
   },
 };
 </script>
@@ -268,7 +292,6 @@ export default {
       font-family: Microsoft YaHei UI;
       font-weight: 400;
       color: #333333;
-      // color: #0C7DD4;
       .popitem {
         padding: 5px 40px;
         cursor: pointer;
