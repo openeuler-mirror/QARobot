@@ -1,16 +1,20 @@
 module.exports = {
     devServer: {
-        // disableHostCheck: true,
-        // host: '7.249.230.161',
-        // port: 8085,
         proxy: {
-            "/api": {
+            '/api-search': {
+                target: 'https://www.openeuler.org',
+                changeOrigin: true,
+                pathRewrite: {
+                    '^/api': '/'
+                }
+            },
+            '/api': {
                 target: 'https://ic-openlabs.huawei.com/chat',
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api': '/'
                 }
-            }
+            },
         }
     },
     pwa: {
