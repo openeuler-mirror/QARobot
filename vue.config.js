@@ -1,8 +1,8 @@
 module.exports = {
     devServer: {
         proxy: {
-            '/api-search': {
-                target: 'https://www.openeuler.org',
+            '/search': {
+                target: 'https://doc-search.openeuler.org',
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api': '/'

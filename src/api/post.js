@@ -28,7 +28,7 @@ export function getSuggestions(inputText) {
   });
 }
 export function getMoreDoc(inputText) {
-  return postRequest('/api-search/search/docs', {
+  return postRequest('/search/docs', {
     keyword: inputText,
     lang: 'zh',
     page: 1,
