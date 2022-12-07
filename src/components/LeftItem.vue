@@ -51,17 +51,16 @@
         <div class="text" v-if="moreDoc.length != 0 && type === 1 || moreDoc.length != 0 && type === 3">
           <div class="titledivider"></div>
           <div class="welcome_question">更多文档库内容:</div>
-          <div class="listBefore" v-for="(item, index) in moreDoc.slice(0, 5)"
-            :key="item.id">
+          <div class="listBefore" v-for="(item, index) in moreDoc.slice(0, 2)" :key="item.id">
             <div class="docList">
               <div class="docTitle">{{ index + 1 }}.<span v-html="item.title" @click="jump(item.path)"></span></div>
               <div class="docContent" v-html="item.textContent"></div>
             </div>
           </div>
-          <div class="listEnd" v-for="(item, index) in moreDoc.slice(5)" :key="item.id">
+          <div class="listEnd" v-for="(item, index) in moreDoc.slice(2)" :key="item.id">
             <div v-if="showDoc">
               <div class="docList">
-                <div class="docTitle">{{ index + 6 }}.<span v-html="item.title" @click="jump(item.path)"></span></div>
+                <div class="docTitle">{{ index + 3 }}.<span v-html="item.title" @click="jump(item.path)"></span></div>
                 <div class="docContent" v-html="item.textContent"></div>
               </div>
             </div>
@@ -135,7 +134,11 @@ export default {
       }
     },
     jump(path) {
-      window.open('https://www.openeuler.org/zh/' + path + '.html')
+      if(path.charAt(path.length - 1) === '/') {
+        window.open('https://www.openeuler.org/zh/' + path)
+      } else {
+        window.open('https://www.openeuler.org/zh/' + path + '.html')
+      }
     },
     Time() {
       let hour = new Date().getHours();
