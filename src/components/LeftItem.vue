@@ -54,6 +54,7 @@
           <div class="listBefore" v-for="(item, index) in moreDoc.slice(0, 2)" :key="item.id">
             <div class="docList">
               <div class="docTitle">{{ index + 1 }}.<span v-html="item.title" @click="jump(item.path)"></span></div>
+              <div class="docVersion" v-if="item.version.length !== 0 && item.version.split(' ').join('').length !== 0">版本: {{ item.version }}</div>
               <div class="docContent" v-html="item.textContent"></div>
             </div>
           </div>
@@ -61,6 +62,7 @@
             <div v-if="showDoc">
               <div class="docList">
                 <div class="docTitle">{{ index + 3 }}.<span v-html="item.title" @click="jump(item.path)"></span></div>
+                <div class="docVersion" v-if="item.version.length !== 0 && item.version.split(' ').join('').length !== 0">版本: {{ item.version }}</div>
                 <div class="docContent" v-html="item.textContent"></div>
               </div>
             </div>
@@ -267,6 +269,10 @@ export default {
               color: #FF0000;
             }
           }
+          .docVersion{
+            margin-top: 10px;
+            font-size: 14px;
+          }
           .docContent{
             margin-top: 10px;
           }
@@ -281,6 +287,10 @@ export default {
             &:hover {
               color: #FF0000;
             }
+          }
+          .docVersion{
+            margin-top: 10px;
+            font-size: 14px;
           }
           .docContent{
             margin-top: 10px;
