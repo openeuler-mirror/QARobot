@@ -13,7 +13,7 @@
     "element-ui": "^2.15.9",
     "js-md5": "^0.7.3",
     "vant": "^2.8.7",
-    "vue": "^2.6.11"
+    "vue": "^2.7.10"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.4.0",
@@ -22,7 +22,7 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
-    "sass": "^1.54.0",
+    "sass": "^1.51.0",
     "sass-loader": "^7.3.1",
     "vue-template-compiler": "^2.6.11"
   },

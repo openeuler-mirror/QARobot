@@ -5,14 +5,13 @@
         <img src="@/assets/Euler.png" alt="" class="headerSrc" />
         <span class="title">欢迎使用欧拉小智</span>
       </div>
-      <div class="container">
+      <div class="container" id="container">
         <div class="list" id="list" ref="list">
           <ul>
             <li v-for="(item, index) in msglist" :key="index">
               <RightItem :type="item.type" :content="item.content" v-if="item.me"></RightItem>
               <LeftItem :type="item.type" :header="item.header" :content="item.content" :moreDoc="item.moreDoc" @badreq="badreq" @getMsg="getMsg" v-else>
               </LeftItem>
-              <div v-scroll style="height: 0"></div>
             </li>
           </ul>
         </div>
@@ -56,12 +55,11 @@ export default {
       moreDoc: []
     };
   },
-  directives: {
-    scroll: {
-      inserted: function (el) {
-        el.scrollIntoView();
-      },
-    },
+  updated() {
+    this.$nextTick(() => {
+      const div = document.getElementById('container');
+      div.scrollTop = div.scrollHeight;
+    })
   },
   computed: {
     isDisabled() {
