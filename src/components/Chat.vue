@@ -10,7 +10,7 @@
           <ul>
             <li v-for="(item, index) in msglist" :key="index">
               <RightItem :type="item.type" :content="item.content" v-if="item.me"></RightItem>
-              <LeftItem :type="item.type" :header="item.header" :content="item.content" :moreDoc="item.moreDoc" @badreq="badreq" @getMsg="getMsg" v-else>
+              <LeftItem :question="question" :type="item.type" :header="item.header" :content="item.content" :moreDoc="item.moreDoc" @badreq="badreq" @getMsg="getMsg" @chatover='chatover' v-else>
               </LeftItem>
             </li>
           </ul>
@@ -31,12 +31,59 @@
         </div>
       </div>
     </div>
+    <div class="aside">
+      <div class="aside_header">常用工具</div>
+      <div class="aside_content">
+        <div class="aside_item" v-for="item in asideOrders" :key="item.title" @click="dialogVisible = true">
+          <a>
+            <div class="aside_item_content" style="display:flex;align-item:center;justify-content: center;">
+              <img :src="item.src" />
+            </div>
+            <div class="">{{item.title}}</div>
+          </a>
+        </div>
+      </div>
+      <div class="aside_footer">
+        <div class="footer_title">热点追踪</div>
+        <div class="footer_content">
+          <ul>
+            <li class="itemmsg" v-for="item in hootList" :key="item.title" >
+              <span @click="gethot(item.src)">{{ item.title }}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <el-dialog
+      title="意见反馈"
+      :visible.sync="dialogVisible"
+      center
+      width="40%"
+      @close="dialogClose">
+      <div style="font-size: 16px;margin-bottom: 15px;">你给小智打几分？</div>
+      <el-rate
+        v-model="rate"
+        show-text
+        style="margin-bottom: 15px;">
+      </el-rate>
+      <el-input
+        type="textarea"
+        :rows="7"
+        placeholder="请具体描述您的意见，小智会不断学习的"
+        v-model="textarea">
+      </el-input>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="feedback">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import defaultSettings from '@/config/defaultSettings.js';
-import { getAnswer, getSuggestions, getMoreDoc } from '@/api/post';
+import {asideOrders, hootList} from '@/config/asideData.js'
+import { getAnswer, getSuggestions, getMoreDoc, getToken} from '@/api/post';
 import LeftItem from '@/components/LeftItem';
 import RightItem from '@/components/RightItem';
 
@@ -45,6 +92,7 @@ export default {
   components: { LeftItem, RightItem },
   data: () => {
     return {
+      question: '',
       header: '',
       doneFlag: true,
       msgData: [],
@@ -52,7 +100,12 @@ export default {
       msg: '',
       msgType: '',
       msglist: [],
-      moreDoc: []
+      moreDoc: [],
+      rate: null,
+      hootList: hootList,
+      asideOrders: asideOrders,
+      dialogVisible: false,
+      textarea: ''
     };
   },
   updated() {
@@ -69,11 +122,40 @@ export default {
     },
   },
   created() {
+    this.getToken()
   },
   mounted() {
     this.initData('welcome_tag');
   },
   methods: {
+    handleDraggable(config) {
+      if (config.dragging) {
+        this.style = {
+          left: `${config.x}px`,
+          top: `${config.y}px`,
+          width: `${config.rect.width}px`,
+          height: `${config.rect.height}px`,
+        }
+      }
+    },
+    gethot(path) {
+      window.open(path)
+    },
+    feedback() {
+      this.$message.info('反馈成功!')
+      this.dialogVisible = false
+    },
+    getToken() {
+      getToken(this.text).then((res) => {
+        if (res) {
+          localStorage.setItem('Access-Token', res.accessToken)
+        }
+      });
+    },
+    dialogClose() {
+      this.textarea = '';
+      this.rate = null;
+    },
     listen(event) {
       this.text = this.text.replace(/[\r\n]/g, '');
       if (!this.text) {
@@ -85,6 +167,13 @@ export default {
       if (event.keyCode === 13) {
         event.preventDefault(); // 阻止浏览器默认换行操作
         this.send();
+      }
+    },
+    chatover() {
+      if (this.msgType === 4) {
+        return
+      } else {
+        this.itempush()
       }
     },
     send() {
@@ -102,6 +191,7 @@ export default {
           me: true,
         });
         this.initData(this.text);
+        this.question = this.text
         this.text = '';
       }
     },
@@ -131,6 +221,15 @@ export default {
         });
       }
     },
+    itempush() {
+      this.msglist.push({
+        header: this.header,
+        type: this.msgType,
+        content: this.msg,
+        moreDoc: this.moreDoc,
+        me: false,
+      });
+    },
     initData(text) {
       if (this.doneFlag) {
         this.doneFlag = false;
@@ -157,9 +256,9 @@ export default {
             if (res.data[0].answer_source === 'welcome_tag') {
               this.msgType = 0; // 首次进入小智界面所展示的数据类型
               this.msg = res.data[0].chatScriptContent;
-            } else if (res.data[0].answer_source === 'backfill') {
+            } else if (res.data[0].answer_source === 'backfill' && this.moreDoc.length !== 0) {
               this.msgType = 1; // 小智未查找到问题相关信息所返回的数据类型
-              this.msg = res.data[0].chatScriptContent;
+              this.msg = '小智对openEuler社区及openEuler操作系统比较了解~可以尝试问问我相关问题哦';
             } else if (
               res.data[0].answer_source === 'faq' &&
               res.data[0].answer
@@ -167,17 +266,24 @@ export default {
               this.msgType = 2; // 小智查找到问题相关信息所返回的数据类型
               this.msg = res.data[0].answer;
               this.header = res.data[0].intent;
+            } else if (res.data[0].answer_source === 'backfill' && this.moreDoc.length === 0) {
+              this.msgType = 4;
+              this.msg = '';
             } else {
-              this.msgType = 3;
+              this.msgType = 3; //
               this.msg = res.data[0].related_ques;
             }
-            this.msglist.push({
-              header: this.header,
-              type: this.msgType,
-              content: this.msg,
-              moreDoc: this.moreDoc,
-              me: false,
-            });
+            if (this.msgType === 0 || this.msgType === 2 || this.msgType === 4) {
+              this.itempush()
+            } else {
+              this.msglist.push({
+                header: this.header,
+                type: 4,
+                content: '',
+                moreDoc: this.moreDoc,
+                me: false,
+              });
+            }
           }
         });
       } else {
@@ -191,9 +297,9 @@ export default {
     },
     badreq() {
       this.msglist.push({
-        header: '',
-        type: 4,
-        content: '<p>小智没有回答您的问题？想要提出使用意见？欢迎点击链接向我们提问&amp;反馈！我们会尽快为您解答：<a href="https://isurvey.huawei.com/survey/#/privacy-page?p=U28753-fErYxf-bEx8Iw" target="_blank" rel="noopener">欧拉小智使用意见</a>&nbsp;</p>',
+        header: '可以告诉我您不满意的原因吗?',
+        type: 5,
+        content: '',
         moreDoc: [],
         me: false,
       });
@@ -201,9 +307,12 @@ export default {
   },
 };
 </script>
-
+<style scoped>
+</style>
 <style scoped lang="scss">
-.maincontainer {
+.appclass {
+  display: flex;
+  .maincontainer {
   width: 889px;
   height: 788px;
   background: #ffffff;
@@ -211,15 +320,16 @@ export default {
   opacity: 1;
   border-radius: 0px;
   margin: 88px auto 24px;
+  margin-right: 20px;
   .appheader {
     width: 889px;
     height: 8%;
     background: #afdfff;
     opacity: 1;
-    display: fixed;
+    // display: fixed;
     vertical-align: middle;
     .headerSrc {
-      position: absolute;
+      position: relative;
       width: 48px;
       height: 48px;
       margin: 8px 803px 8px 38px;
@@ -232,7 +342,8 @@ export default {
       font-weight: bold;
       margin: 15px 581px 16px 106px !important;
       color: #333333;
-      position: absolute;
+      position: relative;
+      top: -50px;
     }
   }
   .container {
@@ -337,6 +448,85 @@ export default {
           border: 0;
           background: #eeeeee;
           border-radius: 4px;
+        }
+      }
+    }
+  }
+  }
+  .aside {
+    width: 300px;
+    height: 788px;
+    background: #ffffff;
+    box-shadow: 0px 0px 14px rgba(51, 51, 51, 0.16);
+    opacity: 1;
+    border-radius: 0px;
+    margin: 88px auto 24px;
+    margin-left: 20px;
+    .aside_header {
+      font-weight: 700;
+      font-family: Microsoft YaHei;
+      font-size: 20px;
+      color: #000;
+      line-height: 29px;
+      text-align: center;
+      margin: 18px 25px 16px 24px;
+      display: inline-block;
+    }
+    .aside_content {
+      display: flex;
+      flex-wrap: wrap;
+      margin: 0 15px 0;
+      .aside_item {
+        flex: 0 0 33.3%;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-top: 16px;
+        margin-bottom: 16px;
+        a {
+          background: 0 0;
+          text-decoration: none;
+          outline: 0;
+          cursor: pointer;
+          transition: color .2s ease;
+          .aside_item_content {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+          }
+          div {
+            font-size: 15px;
+            color: #555;
+            letter-spacing: 0;
+            text-align: center;
+            line-height: 18px;
+          }
+        }
+      }
+    }
+    .aside_footer {
+      margin: 18px 25px 16px 24px;
+      .footer_title {
+        font-weight: 700;
+        font-family: Microsoft YaHei;
+        font-size: 20px;
+        color: #000;
+        line-height: 29px;
+        text-align: center;
+        display: inline-block;
+        margin-bottom: 10px;
+      }
+      .footer_content {
+        .itemmsg {
+          color: #0064c8;
+          margin-top: 10px;
+          font-size: 16px;
+          margin: 15px auto 15px;
+          cursor: pointer;
+          font-family: Microsoft Yahei,Open Sans,Helvetica,Tahoma,Arial,Hiragino Sans GB,WenQuanYi Micro Hei,sans-serif;
+          &:hover {
+            text-decoration: underline;
+          }
         }
       }
     }

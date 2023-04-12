@@ -1,6 +1,20 @@
 module.exports = {
     devServer: {
         proxy: {
+            '/chatCompletionStream': {
+                target: 'https://chatbot-backend.mlops.pub',
+                changeOrigin: true,
+                pathRewrite: {
+                    '^/api': '/'
+                }
+            },
+            '/auth': {
+                target: 'https://chatbot-backend.mlops.pub',
+                changeOrigin: true,
+                pathRewrite: {
+                    '^/api': '/'
+                }
+            },
             '/search': {
                 target: 'https://doc-search.openeuler.org',
                 changeOrigin: true,
