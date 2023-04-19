@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <img style="width: 230px;position: fixed;" src="@/assets/chatbot.gif" v-draggable />
     <Chat />
     <AppFooter />
   </div>

@@ -1,10 +1,12 @@
 <template>
   <div>
-    <div class="timearea">
+    <div class="timearea" v-if="zanfeedVis">
       <span class="lefttime">{{ date }}</span>
     </div>
     <div class="leftcontainer">
-      <img class="head" src="@/assets/sevice.png" />
+      <div v-if="zanfeedVis">
+        <img class="head" src="@/assets/chatbot.png" />
+      </div>
       <div class="content">
         <div class="welcomeMsg" v-if="type === 0">
           <div class="welcome_user">{{ welcomeTitle }}</div>
@@ -28,7 +30,7 @@
             </div>
           </div>
         </div>
-        <div class="text" v-if="type === 1">
+        <div class="text" v-if="type === 1 && moreDoc.length !== 0">
           <div class="header" v-if="header.length != 0 && header.split(' ').join('').length != 0">{{ header }}</div>
           <div class="welcome_question">{{ welcomeTitle }}</div>
           <div class="listBefore" v-for="(item, index) in tableData"
@@ -37,7 +39,7 @@
               @click="getMsg(item)">{{ index + 1 }}.{{ item }}</a>
           </div>
         </div>
-        <div class="text" v-if="type === 2 || type === 4">
+        <div class="text" v-if="type === 2">
           <div class="header" v-if="header.length != 0 && header.split(' ').join('').length != 0">{{ header }}</div>
           <div v-html="content"></div>
         </div>
@@ -54,16 +56,14 @@
           <div class="listBefore" v-for="(item, index) in moreDoc.slice(0, 2)" :key="item.id">
             <div class="docList">
               <div class="docTitle">{{ index + 1 }}.<span v-html="item.title" @click="jump(item.path)"></span></div>
-              <div class="docVersion" v-if="item.version.length !== 0 && item.version.split(' ').join('').length !== 0">版本: {{ item.version }}</div>
-              <div class="docContent" v-html="item.textContent"></div>
+              <div class="docVersion" v-if="item.version && item.version.length !== 0 && item.version.split(' ').join('').length !== 0">版本: {{ item.version }}</div>
             </div>
           </div>
           <div class="listEnd" v-for="(item, index) in moreDoc.slice(2)" :key="item.id">
             <div v-if="showDoc">
               <div class="docList">
                 <div class="docTitle">{{ index + 3 }}.<span v-html="item.title" @click="jump(item.path)"></span></div>
-                <div class="docVersion" v-if="item.version.length !== 0 && item.version.split(' ').join('').length !== 0">版本: {{ item.version }}</div>
-                <div class="docContent" v-html="item.textContent"></div>
+                <div class="docVersion" v-if="item.version && item.version.length !== 0 && item.version.split(' ').join('').length !== 0">版本: {{ item.version }}</div>
               </div>
             </div>
           </div>
@@ -75,11 +75,39 @@
             </div>
           </div>
         </div>
-        <div class="zan-box" v-if="type != 0 && type != 4">
+        <div class="zan-box" v-if="type != 0 && type != 5">
           <img class="zanitem" src="@/assets/like-unclicked.png" alt="" v-if="!iscommented" @click="comment(1)">
           <img class="zanitem" src="@/assets/like-clicked.png" alt="" v-if="islike && islike === 1">
           <img class="zanitem" src="@/assets/dislike-unclicked.png" alt="" v-if="!iscommented" @click="comment(2)">
           <img class="zanitem" src="@/assets/dislike-clicked.png" alt="" v-if="islike && islike === 2">
+        </div>
+        <div class="zan-feedback" v-if="type === 5 && !isSubmit && zanfeedVis">
+          <div class="header" v-if="header.length != 0 && header.split(' ').join('').length != 0">{{ header }}</div>
+          <el-row class="button-content">
+            <el-button @click="getCheck(1)" size="medium" :type="checked === 1 ? 'primary' : ''" round>答非所问</el-button>
+            <el-button @click="getCheck(2)" size="medium" :type="checked === 2 ? 'primary' : ''" round>没有答案</el-button>
+            <el-button @click="getCheck(3)" size="medium" :type="checked === 3 ? 'primary' : ''" round>操作后无效</el-button>
+            <el-button @click="getCheck(4)" size="medium" :type="checked === 4 ? 'primary' : ''" round>其他-请补充</el-button>
+          </el-row>
+          <el-input
+            class="suggest_content"
+            type="textarea"
+            :rows="7"
+            placeholder="请具体描述您的意见"
+            v-model="badsuggest">
+          </el-input>
+          <el-row class="check-button">
+            <el-button size="medium" @click="submit">提交</el-button>
+            <el-button size="medium" @click="cancelsub">取消</el-button>
+          </el-row>
+        </div>
+        <div class="text" v-if="type === 5 && isSubmit && zanfeedVis">
+          <i style="color: #5cdd5c;margin-right: 4px;" class="el-icon-success"></i>
+          <span>已提交</span>
+        </div>
+        <div class="aitext" v-if="type === 4" v-loading="aitext === ''">
+          <div v-highlight v-if="aitext !== ''" v-html="aitext"></div>
+          <div v-else style="height: 35px;width: 25px;"></div>
         </div>
       </div>
     </div>
@@ -87,11 +115,20 @@
 </template>
 
 <script>
+import { getChatapi } from '@/api/post';
+import MarkdownIt from 'markdown-it'
+
 export default {
   name: 'LeftItem',
-  props: ['type', 'content', 'header', 'moreDoc'],
+  props: ['type', 'content', 'header', 'moreDoc', 'question'],
   data: () => {
     return {
+      md: '',
+      mdText: '',
+      zanfeedVis: true, // 判断用户是否点赞完毕
+      isSubmit: false, // 判断用户是否反馈完毕
+      loading: true,
+      aitext: '',
       date: '',
       welcomeTitle: '',
       welcomeNote: '',
@@ -100,13 +137,29 @@ export default {
       iscommented: false,
       islike: undefined,
       tableData: [],
+      badsuggest: '',
+      checked: null
     };
+  },
+  watch: {
   },
   created() {
     this.initData();
     this.Time();
   },
+  mounted() {
+    this.md = new MarkdownIt({
+      linkify: true,
+    })
+  },
   methods: {
+    submit() {
+      this.$message('反馈成功!')
+      this.isSubmit = true
+    },
+    cancelsub() {
+      this.zanfeedVis = false
+    },
     initData() {
       if (this.type === 1) {
         if(this.content.indexOf('{') === -1) {
@@ -123,16 +176,37 @@ export default {
           .substring(this.content.indexOf('{') + 1, this.content.indexOf('}'))
           .split(';');
       }
+      // 匹配智能机器人回答
+      if (this.type === 4) {
+        this.getAi()
+      }
+    },
+    getAi() {
+      getChatapi(this.question, {
+        message: (res) => {
+          this.mdText += JSON.parse(res) // 去除双引号
+          this.aitext = this.md.render(this.mdText)
+        },
+        close: () => {
+          // 监听chatapi接口数据是否输出完毕
+          this.$emit('chatover')
+        }
+      })
     },
     getMsg(msg) {
       this.$emit('getMsg', msg);
     },
+    getCheck(value) {
+      this.checked = value
+    },
     comment(type) {
       this.iscommented = true;
       this.islike = type;
-      this.$message('反馈成功!')
-      if(type === 2) {
+      if (type === 1) {
+        this.$message('反馈成功!')
+      } else {
         this.$emit('badreq');
+        this.zanfeedVis = true;
       }
     },
     jump(path) {
@@ -153,7 +227,13 @@ export default {
   },
 };
 </script>
-
+<style scoped>
+::deep .el-loading-spinner .circular {
+    height: 30px!important;
+    width: 30px!important;
+    animation: loading-rotate 2s linear infinite;
+}
+</style>
 <style scoped lang="scss">
 .timearea {
   height: 44px;
@@ -325,6 +405,43 @@ export default {
             text-decoration: underline;
           }
         }
+      }
+    }
+    .aitext {
+      line-height: 2;
+      opacity: 0.8;
+      border-radius: 4px;
+      background-color: #eeeeee;
+      padding: 7px 16px;
+      font-size: 16px;
+      font-family: Microsoft YaHei UI;
+      font-weight: 400;
+      color: #000000;
+    }
+    .zan-feedback {
+      width: 500px;
+      opacity: 0.8;
+      border-radius: 4px;
+      background-color: #e6f7ff;
+      padding: 7px 16px;
+      font-size: 16px;
+      font-family: Microsoft YaHei UI;
+      font-weight: 400;
+      color: #000000;
+      .header {
+        font-size: 16px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        font-weight: bold;
+      }
+      .button-content {
+        margin: 15px 0 5px 0;
+      }
+      .suggest_content {
+        margin: 10px 0 7px 0;
+      }
+      .check-button{
+        margin: 10px 0 10px 0;
       }
     }
   }
