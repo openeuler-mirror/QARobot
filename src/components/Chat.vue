@@ -5,12 +5,12 @@
         <img src="@/assets/Euler.png" alt="" class="headerSrc" />
         <span class="title">欢迎使用欧拉小智</span>
       </div>
-      <div class="container" id="container">
+      <div class="container" id="container" ref="container">
         <div class="list" id="list" ref="list">
           <ul>
             <li v-for="(item, index) in msglist" :key="index">
               <RightItem :type="item.type" :content="item.content" v-if="item.me"></RightItem>
-              <LeftItem :question="question" :type="item.type" :header="item.header" :content="item.content" :moreDoc="item.moreDoc" @badreq="badreq" @getMsg="getMsg" @chatover='chatover' v-else>
+              <LeftItem :question="question" :type="item.type" :header="item.header" :content="item.content" :moreDoc="item.moreDoc" @badreq="badreq" @getMsg="getMsg" @chatover='chatover' @divMove="divMove" v-else>
               </LeftItem>
             </li>
           </ul>
@@ -109,10 +109,8 @@ export default {
     };
   },
   updated() {
-    this.$nextTick(() => {
-      const div = document.getElementById('container');
-      div.scrollTop = div.scrollHeight;
-    })
+    //  dom 元素更新后执行滚动条到底部 否则不生效
+    this.scrollToBottom()
   },
   computed: {
     isDisabled() {
@@ -128,6 +126,23 @@ export default {
     this.initData('welcome_tag');
   },
   methods: {
+    // eventStream动态输出回答时实时监听滚动条底部距离并调用拖动方法
+    divMove() {
+      this.scrollToBottom()
+    },
+    scrollToBottom() { // 滚动条拖动最底部方法
+      // this.$nextTick 将回调延迟到下次DOM更新循环之后执行。在修改数据之后立即使用它，然后等待DOM更新
+      this.$nextTick(() => {
+        // dom 元素更新后执行滚动条到底部 否则不生效
+        let scrollElem = this.$refs.container;
+        // console.log('scrollHeight: ', scrollElem.scrollHeight);
+        // scrollElem.scrollTop = scrollElem.scrollHeight
+        scrollElem.scrollTo({
+          top: scrollElem.scrollHeight,
+          behavior: 'smooth'
+        });
+      });
+    },
     handleDraggable(config) {
       if (config.dragging) {
         this.style = {
