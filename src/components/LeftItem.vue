@@ -184,6 +184,7 @@ export default {
     getAi() {
       getChatapi(this.question, {
         message: (res) => {
+          this.$emit('divMove') // 没刷新一次数据就向父组件传递数据动态实时查询数据
           this.mdText += JSON.parse(res) // 去除双引号
           this.aitext = this.md.render(this.mdText)
         },
