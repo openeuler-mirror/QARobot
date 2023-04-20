@@ -211,9 +211,9 @@ export default {
     },
     jump(path) {
       if(path.charAt(path.length - 1) === '/') {
-        window.open('https://www.openeuler.org/zh/' + path)
+        window.open('https://www.openeuler.org/' + path)
       } else {
-        window.open('https://www.openeuler.org/zh/' + path + '.html')
+        window.open('https://www.openeuler.org/' + path + '.html')
       }
     },
     Time() {
