@@ -74,7 +74,7 @@ export default {
     margin-top: 10px;
 
     .text {
-      background: #eeeeee;
+      background: rgba(125,50,234,0.08);
       word-break: break-all;
       border-radius: 4px;
       padding: 7px 16px;

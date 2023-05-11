@@ -4,7 +4,7 @@
       <span class="lefttime">{{ date }}</span>
     </div>
     <div class="leftcontainer">
-      <div v-if="zanfeedVis">
+      <div v-if="zanfeedVis" class="headcore">
         <img class="head" src="@/assets/chatbot.png" />
       </div>
       <div class="content">
@@ -184,7 +184,7 @@ export default {
     getAi() {
       getChatapi(this.question, {
         message: (res) => {
-          this.$emit('divMove') // 没刷新一次数据就向父组件传递数据动态实时查询数据
+          this.$emit('divMove') // 每刷新一次数据就向父组件发送信息动态查询
           this.mdText += JSON.parse(res) // 去除双引号
           this.aitext = this.md.render(this.mdText)
         },
@@ -255,14 +255,18 @@ export default {
   padding: 10px 15px;
   margin-right: 60px;
 
-  .head {
-    width: 60px;
-    height: 60px;
+  .headcore {
+    margin-left: 15px;
+    .head {
+      width: 60px;
+      height: 60px;
+    }
   }
 
   .content {
     position: relative;
-    margin-left: 33px;
+    max-width: 85%;
+    margin-left: 14px;
     margin-top: 10px;
     .zan-box {
       position: absolute;
@@ -281,7 +285,7 @@ export default {
       padding: 16px;
       opacity: 0.8;
       border-radius: 4px;
-      background-color: #e6f7ff;
+      background-color: rgba(125,50,234,0.08);
       .welcome_user {
         margin-top: 8px;
         font-weight: bold;
@@ -330,15 +334,15 @@ export default {
     .text {
       opacity: 0.8;
       border-radius: 4px;
-      background-color: #e6f7ff;
+      background-color: rgba(125,50,234,0.08);
       padding: 7px 16px;
       font-size: 16px;
+      line-height: 1.7;
       font-family: Microsoft YaHei UI;
       font-weight: 400;
       color: #000000;
       .header {
         font-size: 18px;
-        margin-top: 10px;
         margin-bottom: 10px;
         font-weight: bold;
       }
@@ -414,7 +418,7 @@ export default {
       line-height: 2;
       opacity: 0.8;
       border-radius: 4px;
-      background-color: #eeeeee;
+      background-color: rgba(125,50,234,0.08);
       padding: 7px 16px;
       font-size: 16px;
       font-family: Microsoft YaHei UI;
@@ -433,7 +437,6 @@ export default {
       color: #000000;
       .header {
         font-size: 16px;
-        margin-top: 10px;
         margin-bottom: 10px;
         font-weight: bold;
       }
