@@ -10,14 +10,6 @@
       <div class="content">
         <div class="welcomeMsg" v-if="type === 0">
           <div class="welcome_user">尊敬的用户，您好！欢迎使用openGauss小智，很高兴为您服务，请问您遇到什么问题了？</div>
-          <!-- <div class="welcome_notes">{{ welcomeNote }}</div>
-          <div class="titledivider"></div>
-          <div class="welcome_question">我猜您想问的问题是:</div>
-          <div class="listBefore" v-for="(item, index) in tableData.slice(0, 5)"
-            :key="'infoA' + item">
-            <a href="javascript:void(0)" class="itemmsg"
-              @click="getMsg(item)">{{ index + 1 }}.{{ item }}</a>
-          </div> -->
           <div class="listEnd" v-for="(item, index) in tableData.slice(5)" :key="'infoB' + item">
             <a href="javascript:void(0)" class="itemmsg" v-if="showMsg"
               @click="getMsg(item)">{{ index + 6 }}.{{ item }}</a>
