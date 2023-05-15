@@ -9,7 +9,7 @@
       </div>
       <div class="content">
         <div class="welcomeMsg" v-if="type === 0">
-          <div class="welcome_user">尊敬的用户，您好！欢迎使用高斯小智，很高兴为您服务，请问您遇到什么问题了？</div>
+          <div class="welcome_user">尊敬的用户，您好！欢迎使用openGauss小智，很高兴为您服务，请问您遇到什么问题了？</div>
           <!-- <div class="welcome_notes">{{ welcomeNote }}</div>
           <div class="titledivider"></div>
           <div class="welcome_question">我猜您想问的问题是:</div>
