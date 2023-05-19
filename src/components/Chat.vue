@@ -9,8 +9,25 @@
         <div class="list" id="list" ref="list">
           <ul>
             <li v-for="(item, index) in msglist" :key="index">
-              <RightItem :type="item.type" :content="item.content" v-if="item.me"></RightItem>
-              <LeftItem :question="question" :type="item.type" :header="item.header" :content="item.content" :moreDoc="item.moreDoc" @badreq="badreq" @getMsg="getMsg" @chatover='chatover' @divMove="divMove" v-else>
+              <RightItem
+                :type="item.type"
+                :content="item.content"
+                v-if="item.me"
+              ></RightItem>
+              <LeftItem
+                :question="question"
+                :type="item.type"
+                :header="item.header"
+                :content="item.content"
+                :moreDoc="item.moreDoc"
+                :docText="item.docText"
+                :requestId="item.requestId"
+                @badreq="badreq"
+                @getMsg="getMsg"
+                @chatover="chatover"
+                @divMove="divMove"
+                v-else
+              >
               </LeftItem>
             </li>
           </ul>
@@ -83,7 +100,12 @@
 <script>
 import defaultSettings from '@/config/defaultSettings.js';
 import {asideOrders, hootList} from '@/config/asideData.js'
-import { getAnswer, getSuggestions, getMoreDoc, getToken} from '@/api/post';
+import {
+  getChatSuggestions,
+  userFeedback,
+  getQabotChat,
+  getMoreDoc,
+} from "@/api/post";
 import LeftItem from '@/components/LeftItem';
 import RightItem from '@/components/RightItem';
 
@@ -101,11 +123,15 @@ export default {
       msgType: '',
       msglist: [],
       moreDoc: [],
-      rate: null,
+      docText: "",
+      rate: 0,
       hootList: hootList,
       asideOrders: asideOrders,
       dialogVisible: false,
-      textarea: ''
+      textarea: "",
+      sessionId: "",
+      requestId: "",
+      domainIds:["327506c0-1d51-49f4-9a0b-2ed6a2496533","00b7c9d4-c0e6-4f45-bba8-3cdcb490df5f","f1878a01-75b5-4bf0-9f98-062939fef1ef"],
     };
   },
   updated() {
@@ -120,10 +146,17 @@ export default {
     },
   },
   created() {
-    this.getToken()
+    this.msglist.push({
+      header: this.header,
+      type: 0,
+      content: "",
+      moreDoc: this.moreDoc,
+      me: false,
+      requestId: this.requestId,
+    });
   },
   mounted() {
-    this.initData('welcome_tag');
+    this.initData("");
   },
   methods: {
     // eventStream动态输出回答时实时监听滚动条底部距离并调用拖动方法
@@ -157,19 +190,21 @@ export default {
       window.open(path)
     },
     feedback() {
-      this.$message.info('反馈成功!')
-      this.dialogVisible = false
-    },
-    getToken() {
-      getToken(this.text).then((res) => {
-        if (res) {
-          localStorage.setItem('Access-Token', res.accessToken)
+      const datas = {
+        session_id: this.sessionId,
+        feedback: this.rate,
+        comment: this.textarea,
+      };
+      userFeedback(datas).then((res) => {
+        if (res.feedback_id) {
+          this.$message.info("反馈成功!");
+          this.dialogVisible = false;
         }
       });
     },
     dialogClose() {
       this.textarea = '';
-      this.rate = null;
+      this.rate = 0;
     },
     listen(event) {
       this.text = this.text.replace(/[\r\n]/g, '');
@@ -191,7 +226,7 @@ export default {
         this.itempush()
       }
     },
-    send() {
+    send(type) {
       this.msgData = [];
       this.text = this.text.replace(/[\r\n]/g, '');
       if (
@@ -205,10 +240,92 @@ export default {
           content: this.text,
           me: true,
         });
-        this.initData(this.text);
-        this.question = this.text
-        this.text = '';
+        const params = {
+          extend: {
+            domain_ids: this.domainIds,
+          },
+          question: this.text,
+        };
+
+        this.getChat(params, type);
+        this.question = this.text;
+        this.text = "";
       }
+    },
+    getChat(params, type) {
+      getMoreDoc(params.question).then((res) => {
+        if (res.status === 200 && res.obj) {
+          this.docText = "";
+          if (res.obj.records[0]) {
+            this.docText = res.obj.records[0].textContent;
+          }
+        } else {
+          this.docText = "";
+        }
+      });
+      getQabotChat(params).then((res) => {
+        if (res) {
+          this.requestId = res.request_id;
+          this.sessionId = res.session_id;
+          this.header = "";
+
+          if (res.reply_type == 0 && res.qabot_answers.answers.length > 0) {
+            if (type == "2") {
+              this.msgType = 2;
+            } else {
+              this.msgType = 4; // 小智查找到问题相关信息所返回的数据类型
+            }
+            this.header = res.qabot_answers.answers[0].st_question;
+            this.msg = res.qabot_answers.answers[0].answer;
+          } else if (
+            res.reply_type == 0 &&
+            res.qabot_answers.recommend_answers.length > 0
+          ) {
+            this.msgType = 3; // 小智推荐的问题
+            this.msg = res.qabot_answers.recommend_answers;
+          } else if (res.reply_type == 1) {
+            this.msgType = 4; // 小智查找到问题相关信息对话
+            this.msg = res.taskbot_answers.answer;
+          } else if (
+            res.reply_type == 2 &&
+            res.chat_answers.chat_type == "NO_ANSWER"
+          ) {
+            this.msgType = 3;
+          } else if (
+            res.reply_type != 0 &&
+            res.reply_type != 1 &&
+            res.reply_type != 2
+          ) {
+            this.msgType = 1; // 小智未查找到问题相关信息所返回的数据类型
+            if (res.reply_type == 2 && res.chat_answers.answer) {
+              this.msg = res.chat_answers.answer;
+            } else {
+              this.msg =
+                "小智对openEuler社区及openEuler操作系统比较了解~可以尝试问问我相关问题哦";
+            }
+          }
+          // 小智得数据状态
+          if (
+            this.msgType === 0 ||
+            this.msgType === 1 ||
+            this.msgType === 2 ||
+            this.msgType === 3 ||
+            this.msgType === 4
+          ) {
+            this.itempush();
+          } else {
+            this.msglist.push({
+              header: this.header,
+              type: 6,
+              content: "",
+              moreDoc: this.moreDoc,
+              docText: this.docText,
+              me: false,
+              requestId: this.requestId,
+            });
+          }
+        }
+      });
     },
     popClick(msg) {
       msg = msg
@@ -221,9 +338,17 @@ export default {
     searchData() {
       this.msgData = [];
       if (this.text) {
-        getSuggestions(this.text).then((res) => {
-          if (res.data) {
-            res.data.forEach((item) => {
+        const params = {
+          question: this.text,
+          top: 5,
+          extend: {
+            domain_ids: this.domainIds,
+          },
+        };
+        getChatSuggestions(params).then((res) => {
+          this.msgData = [];
+          if (res.questions) {
+            res.questions.forEach((item) => {
               if (this.text) {
                 item = item.replaceAll(
                   this.text,
@@ -242,7 +367,9 @@ export default {
         type: this.msgType,
         content: this.msg,
         moreDoc: this.moreDoc,
+        docText: this.docText,
         me: false,
+        requestId: this.requestId,
       });
     },
     initData(text) {
@@ -251,56 +378,6 @@ export default {
         setTimeout(() => {
           this.doneFlag = true;
         }, defaultSettings.DefaultRequestInterval);
-        getMoreDoc(text).then((res) => {
-          if (res.status === 200 && res.obj) {
-            this.moreDoc = [];
-            res.obj.records.forEach((item) => {
-              item.title = item.title.replaceAll(
-                '<span>',
-                '<span style="color:#AD0D00">'
-              );
-              this.moreDoc.push(item);
-            });
-          } else {
-            this.moreDoc = [];
-          }
-        })
-        getAnswer(text).then((res) => {
-          if (res.data && res.data[0]) {
-            this.header = '';
-            if (res.data[0].answer_source === 'welcome_tag') {
-              this.msgType = 0; // 首次进入小智界面所展示的数据类型
-              this.msg = res.data[0].chatScriptContent;
-            } else if (res.data[0].answer_source === 'backfill' && this.moreDoc.length !== 0) {
-              this.msgType = 1; // 小智未查找到问题相关信息所返回的数据类型
-              this.msg = '小智对openEuler社区及openEuler操作系统比较了解~可以尝试问问我相关问题哦';
-            } else if (
-              res.data[0].answer_source === 'faq' &&
-              res.data[0].answer
-            ) {
-              this.msgType = 2; // 小智查找到问题相关信息所返回的数据类型
-              this.msg = res.data[0].answer;
-              this.header = res.data[0].intent;
-            } else if (res.data[0].answer_source === 'backfill' && this.moreDoc.length === 0) {
-              this.msgType = 4;
-              this.msg = '';
-            } else {
-              this.msgType = 3; //
-              this.msg = res.data[0].related_ques;
-            }
-            if (this.msgType === 0 || this.msgType === 2 || this.msgType === 4) {
-              this.itempush()
-            } else {
-              this.msglist.push({
-                header: this.header,
-                type: 4,
-                content: '',
-                moreDoc: this.moreDoc,
-                me: false,
-              });
-            }
-          }
-        });
       } else {
         this.$message('您的操作过于频繁,请稍后再试');
         return;
@@ -308,17 +385,18 @@ export default {
     },
     getMsg(msg) {
       this.text = msg;
-      this.send();
+      this.send("2");
     },
-    badreq() {
+    badreq(requestIds) {
       this.msglist.push({
         header: '可以告诉我您不满意的原因吗?',
         type: 5,
         content: '',
         moreDoc: [],
         me: false,
+        requestId: requestIds,
       });
-    }
+    },
   },
 };
 </script>

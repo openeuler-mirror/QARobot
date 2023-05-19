@@ -1,6 +1,13 @@
 module.exports = {
     devServer: {
         proxy: {
+            '/qabot/': {
+                target: 'https://dsapi.osinfra.cn/query',
+                changeOrigin: true,
+                pathRewrite: {
+                    '^/api': '/'
+                }
+            },
             '/chatCompletionStream': {
                 target: 'https://chatbot-backend.mlops.pub',
                 changeOrigin: true,
@@ -16,7 +23,7 @@ module.exports = {
                 }
             },
             '/search': {
-                target: 'https://doc-search.openeuler.org',
+                target: 'https://opengauss.org/api-search/',
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api': '/'
