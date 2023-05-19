@@ -131,7 +131,8 @@ export default {
       textarea: "",
       sessionId: "",
       requestId: "",
-      domainIds:["327506c0-1d51-49f4-9a0b-2ed6a2496533","00b7c9d4-c0e6-4f45-bba8-3cdcb490df5f","f1878a01-75b5-4bf0-9f98-062939fef1ef"],
+      docTextType:0,
+      domainIds:["327506c0-1d51-49f4-9a0b-2ed6a2496533","5ae3afea-c0d0-403e-b812-ad2da92c3082","4f345127-c5cb-42c5-96e6-aa9f445074a9","1202b205-5d3b-4f34-8ef2-3c60a0041e04"],
     };
   },
   updated() {
@@ -291,6 +292,7 @@ export default {
             res.chat_answers.chat_type == "NO_ANSWER"
           ) {
             this.msgType = 3;
+            this.docTextType=1;
           } else if (
             res.reply_type != 0 &&
             res.reply_type != 1 &&
@@ -301,7 +303,7 @@ export default {
               this.msg = res.chat_answers.answer;
             } else {
               this.msg =
-                "小智对openEuler社区及openEuler操作系统比较了解~可以尝试问问我相关问题哦";
+                "小智对openGauss比较了解~可以尝试问问我相关问题哦";
             }
           }
           // 小智得数据状态
@@ -309,20 +311,31 @@ export default {
             this.msgType === 0 ||
             this.msgType === 1 ||
             this.msgType === 2 ||
-            this.msgType === 3 ||
             this.msgType === 4
           ) {
             this.itempush();
-          } else {
-            this.msglist.push({
-              header: this.header,
-              type: 6,
-              content: "",
-              moreDoc: this.moreDoc,
-              docText: this.docText,
-              me: false,
-              requestId: this.requestId,
-            });
+          } else if(this.msgType === 3) {
+            if(this.docTextType==1) {
+              this.msglist.push({
+                header: this.header,
+                type: 3,
+                content: "",
+                moreDoc: this.moreDoc,
+                docText: this.docText,
+                me: false,
+                requestId: this.requestId,
+              });
+            }else {
+              this.msglist.push({
+                header: this.header,
+                type: this.msgType,
+                content: this.msg,
+                moreDoc: this.moreDoc,
+                docText: this.docText,
+                me: false,
+                requestId: this.requestId,
+              });
+            }
           }
         }
       });
