@@ -10,19 +10,27 @@ function postRequest(url, data) {
         resolve(res);
       })
       .catch((err) => {
-        if (data.webMessage !== 'manual') {
-          window.$notification?.error({ content: err.data.error_msg || UnKonwn_ErrorMsg });
+        if (err.error_msg) {
+          window.$notification?.error({ content: err.error_msg || UnKonwn_ErrorMsg });
         }
         reject(err);
       });
   });
 }
-// 请求token
-export function getToken(inputText) {
-  const formData = new FormData();
-  formData.append('username', 'temporary_user')
-  formData.append('password', 'default_password')
-  return postRequest('/auth', formData);
+function getRequest(url, data) {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(url, data)
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((err) => {
+        if (err.error_msg) {
+          window.$notification?.error({ content: err.error_msg || UnKonwn_ErrorMsg });
+        }
+        reject(err);
+      });
+  });
 }
 
 // 请求chatapi
@@ -85,3 +93,21 @@ export function getMoreDoc(inputText) {
     type: ''
   });
 }
+
+// 用户意见反馈
+export function userFeedback(params) {
+  return postRequest('/qabot/' + 'user_feedback', params);
+}
+// 问答机器人会话
+export function getQabotChat(params) {
+  return postRequest('/qabot/' +'chat', params);
+}
+// 问答满意评价
+export function satisfaction(params) {
+  return postRequest('/qabot/' +'satisfaction', params);
+}
+// 推荐问题
+export function getChatSuggestions(params) {
+  return postRequest('/qabot/' +'suggestions', params);
+}
+
