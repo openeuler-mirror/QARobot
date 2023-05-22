@@ -269,7 +269,6 @@ export default {
           this.requestId = res.request_id;
           this.sessionId = res.session_id;
           this.header = "";
-
           if (res.reply_type == 0 && res.qabot_answers.answers.length > 0) {
             if (type == "2") {
               this.msgType = 2;
@@ -284,26 +283,14 @@ export default {
           ) {
             this.msgType = 3; // 小智推荐的问题
             this.msg = res.qabot_answers.recommend_answers;
-          } else if (res.reply_type == 1) {
-            this.msgType = 4; // 小智查找到问题相关信息对话
-            this.msg = res.taskbot_answers.answer;
-          } else if (
-            res.reply_type == 2 &&
-            res.chat_answers.chat_type == "NO_ANSWER"
-          ) {
-            this.msgType = 3;
-            this.docTextType=1;
-          } else if (
-            res.reply_type != 0 &&
-            res.reply_type != 1 &&
-            res.reply_type != 2
-          ) {
-            this.msgType = 1; // 小智未查找到问题相关信息所返回的数据类型
-            if (res.reply_type == 2 && res.chat_answers.answer) {
-              this.msg = res.chat_answers.answer;
-            } else {
-              this.msg =
-                "小智对openGauss比较了解~可以尝试问问我相关问题哦";
+            this.docTextType=0;
+          } else if ( res.reply_type !=0) {
+            if(this.docText=="") {
+              this.msgType = 1;
+              this.msg ="小智对openGauss比较了解~可以尝试问问我相关问题哦";
+            }else {
+              this.msgType = 3;
+              this.docTextType=1;
             }
           }
           // 小智得数据状态
