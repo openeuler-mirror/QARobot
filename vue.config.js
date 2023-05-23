@@ -1,6 +1,13 @@
 module.exports = {
     devServer: {
         proxy: {
+            '/qabot/': {
+                target: 'https://dsapi.osinfra.cn/query',
+                changeOrigin: true,
+                pathRewrite: {
+                    '^/api': '/'
+                }
+            },
             '/chatCompletionStream': {
                 target: 'https://chatbot-backend.mlops.pub',
                 changeOrigin: true,
