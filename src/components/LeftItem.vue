@@ -30,7 +30,12 @@
           <div v-html="content"></div>
         </div>
         <div class="text" v-if="type === 3">
-          <div v-html="docText"></div>
+            <div class="header cursorPointer"  @click="jump(docText.path)"
+            v-if="docText.title.length != 0 && docText.title.split(' ').join('').length != 0"
+          >
+            {{ docText.title }}
+          </div>
+          <div v-html="docText.textContent"></div>
           <div class="titledivider"></div>
           <div class="welcome_user" v-if="content.length > 0">
             您可能想了解的是:
@@ -326,6 +331,9 @@ export default {
     color: #333333;
   }
 }
+.cursorPointer{
+  cursor: pointer;
+}
 .leftcontainer {
   display: flex;
   padding: 10px 15px;
@@ -341,6 +349,7 @@ export default {
 
   .content {
     position: relative;
+    max-width: 85%;
     margin-left: 14px;
     margin-top: 10px;
     .zan-box {
@@ -499,6 +508,7 @@ export default {
       font-family: Microsoft YaHei UI;
       font-weight: 400;
       color: #000000;
+      word-wrap:break-word;
     }
     .zan-feedback {
       width: 500px;
