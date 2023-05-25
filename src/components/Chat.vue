@@ -255,12 +255,10 @@ export default {
     },
     getChat(params, type) {
       getMoreDoc(params.question).then((res) => {
-        if (res.status === 200 && res.obj) {
-          this.docText = {};
-          if (res.obj.records[0]) {
-            this.docText = res.obj.records[0];
-          }
-        } else {
+        if (res.status === 200) {
+          this.docText = res.obj?.records[0];
+        }
+        if (!this.docText) { // 或者写成类型判断，如果不是对象则更正为{}
           this.docText = {};
         }
       });
@@ -288,7 +286,7 @@ export default {
             this.msgType = 2;
             this.msg = res.chat_answers.answer;
           } else if ( res.reply_type !=0 && res.reply_type !=2) {
-            if(this.docText=="") {
+            if(Object.keys(this.docText).length==0) {
               this.msgType = 1;
               this.msg ="小智对openGauss比较了解~可以尝试问问我相关问题哦";
             }else {
