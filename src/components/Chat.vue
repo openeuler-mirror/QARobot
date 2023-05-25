@@ -123,7 +123,7 @@ export default {
       msgType: '',
       msglist: [],
       moreDoc: [],
-      docText: "",
+      docText: {},
       rate: 0,
       hootList: hootList,
       asideOrders: asideOrders,
@@ -256,12 +256,12 @@ export default {
     getChat(params, type) {
       getMoreDoc(params.question).then((res) => {
         if (res.status === 200 && res.obj) {
-          this.docText = "";
+          this.docText = {};
           if (res.obj.records[0]) {
-            this.docText = res.obj.records[0].textContent;
+            this.docText = res.obj.records[0];
           }
         } else {
-          this.docText = "";
+          this.docText = {};
         }
       });
       getQabotChat(params).then((res) => {
@@ -284,7 +284,10 @@ export default {
             this.msgType = 3; // 小智推荐的问题
             this.msg = res.qabot_answers.recommend_answers;
             this.docTextType=0;
-          } else if ( res.reply_type !=0) {
+          } else if ( res.reply_type ==2) {
+            this.msgType = 2;
+            this.msg = res.chat_answers.answer;
+          } else if ( res.reply_type !=0 && res.reply_type !=2) {
             if(this.docText=="") {
               this.msgType = 1;
               this.msg ="小智对openGauss比较了解~可以尝试问问我相关问题哦";
