@@ -247,7 +247,6 @@ export default {
           },
           question: this.text,
         };
-
         this.getChat(params, type);
         this.question = this.text;
         this.text = "";

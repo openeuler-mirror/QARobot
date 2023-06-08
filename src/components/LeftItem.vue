@@ -20,7 +20,7 @@
           <div class="titledivider"></div>
           <div v-html="content"></div>
         </div>
-        <div class="text" v-if="type === 2">
+        <div class="text" v-if="type === 2 || type === 4">
           <div
             class="header"
             v-if="header.length != 0 && header.split(' ').join('').length != 0"
@@ -135,10 +135,6 @@
         <div class="text" v-if="type === 5 && isSubmit && zanfeedVis">
           <i style="color: #5cdd5c;margin-right: 4px;" class="el-icon-success"></i>
           <span>已提交</span>
-        </div>
-        <div class="aitext" v-if="type === 4" v-loading="aitext === ''">
-          <div v-highlight v-if="aitext !== ''" v-html="aitext"></div>
-          <div v-else style="height: 35px;width: 25px;"></div>
         </div>
       </div>
     </div>
