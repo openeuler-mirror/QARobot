@@ -4,90 +4,121 @@
       <span class="lefttime">{{ date }}</span>
     </div>
     <div class="leftcontainer">
-      <div v-if="zanfeedVis">
+      <div v-if="zanfeedVis" class="headcore">
         <img class="head" src="@/assets/chatbot.png" />
       </div>
       <div class="content">
         <div class="welcomeMsg" v-if="type === 0">
-          <div class="welcome_user">{{ welcomeTitle }}</div>
-          <div class="welcome_notes">{{ welcomeNote }}</div>
-          <div class="titledivider"></div>
-          <div class="welcome_question">我猜您想问的问题是:</div>
-          <div class="listBefore" v-for="(item, index) in tableData.slice(0, 5)"
-            :key="'infoA' + item">
-            <a href="javascript:void(0)" class="itemmsg"
-              @click="getMsg(item)">{{ index + 1 }}.{{ item }}</a>
-          </div>
-          <div class="listEnd" v-for="(item, index) in tableData.slice(5)" :key="'infoB' + item">
-            <a href="javascript:void(0)" class="itemmsg" v-if="showMsg"
-              @click="getMsg(item)">{{ index + 6 }}.{{ item }}</a>
-          </div>
-          <div v-if="tableData.length > 5">
-            <div class="titledivider"></div>
-            <div @click="showMsg = showMsg ? false : true" class="bottomTitle">
-              <span class="showMore">{{ showMsg ? "收起" : "查看更多" }}</span>
-              <i :class="showMsg ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"></i>
-            </div>
+          <div class="welcome_user">
+            尊敬的用户，您好！欢迎使用欧拉小智，很高兴为您服务，请问您遇到什么问题了？
           </div>
         </div>
-        <div class="text" v-if="type === 1 && moreDoc.length !== 0">
-          <div class="header" v-if="header.length != 0 && header.split(' ').join('').length != 0">{{ header }}</div>
-          <div class="welcome_question">{{ welcomeTitle }}</div>
-          <div class="listBefore" v-for="(item, index) in tableData"
-            :key="'infoC' + item">
-            <a href="javascript:void(0)" class="itemmsg"
-              @click="getMsg(item)">{{ index + 1 }}.{{ item }}</a>
+        <div class="aitext welcomeMsg" v-if="type === 1">
+          <div class="welcome_question">
+            抱歉，您的提问需要更具体的内容或背景才能得到回答。
           </div>
+          <div class="titledivider"></div>
+          <div v-html="content"></div>
         </div>
         <div class="text" v-if="type === 2">
-          <div class="header" v-if="header.length != 0 && header.split(' ').join('').length != 0">{{ header }}</div>
+          <div
+            class="header"
+            v-if="header.length != 0 && header.split(' ').join('').length != 0"
+          >
+            {{ header }}
+          </div>
           <div v-html="content"></div>
         </div>
         <div class="text" v-if="type === 3">
-          <div class="welcome_user">您可能想了解的是:</div>
-          <div class="realize_more" v-for="(item, index) in content" :key="'infoC' + item">
-            <a href="javascript:void(0)" class="itemmsg"
-              @click="getMsg(item)">{{ index + 1 }}.{{ item }}</a>
+            <div class="header cursorPointer"  @click="jump(docText.path)" v-html="docText.title"
+            v-if="docText.title.length != 0 && docText.title.split(' ').join('').length != 0"
+          > </div>
+          <div v-html="docText.textContent"></div>
+          <div class="titledivider"></div>
+          <div class="welcome_user" v-if="content.length > 0">
+            您可能想了解的是:
+          </div>
+          <div
+            class="realize_more"
+            v-for="(item, index) in content"
+            :key="'infoC' + item.qa_pair_id"
+          >
+            <a
+              href="javascript:void(0)"
+              class="itemmsg"
+              @click="getMsg(item.st_question)"
+              >{{ index + 1 }}.{{ item.st_question }}</a
+            >
           </div>
         </div>
-        <div class="text" v-if="moreDoc.length != 0 && type === 1 || moreDoc.length != 0 && type === 3">
+        <div
+          class="text"
+          v-if="
+            (moreDoc.length != 0 && type === 1) ||
+            (moreDoc.length != 0 && type === 3)
+          "
+        >
           <div class="titledivider"></div>
-          <div class="welcome_question">更多文档库内容:</div>
-          <div class="listBefore" v-for="(item, index) in moreDoc.slice(0, 2)" :key="item.id">
-            <div class="docList">
-              <div class="docTitle">{{ index + 1 }}.<span v-html="item.title" @click="jump(item.path)"></span></div>
-              <div class="docVersion" v-if="item.version && item.version.length !== 0 && item.version.split(' ').join('').length !== 0">版本: {{ item.version }}</div>
-            </div>
-          </div>
-          <div class="listEnd" v-for="(item, index) in moreDoc.slice(2)" :key="item.id">
-            <div v-if="showDoc">
-              <div class="docList">
-                <div class="docTitle">{{ index + 3 }}.<span v-html="item.title" @click="jump(item.path)"></span></div>
-                <div class="docVersion" v-if="item.version && item.version.length !== 0 && item.version.split(' ').join('').length !== 0">版本: {{ item.version }}</div>
-              </div>
-            </div>
-          </div>
-          <div v-if="moreDoc.length > 5">
-            <div class="titledivider"></div>
-            <div @click="showDoc = showDoc ? false : true" class="bottomTitle">
-              <span class="showMore">{{ showDoc ? "收起" : "查看更多" }}</span>
-              <i :class="showDoc ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"></i>
-            </div>
-          </div>
         </div>
         <div class="zan-box" v-if="type != 0 && type != 5">
-          <img class="zanitem" src="@/assets/like-unclicked.png" alt="" v-if="!iscommented" @click="comment(1)">
-          <img class="zanitem" src="@/assets/like-clicked.png" alt="" v-if="islike && islike === 1">
-          <img class="zanitem" src="@/assets/dislike-unclicked.png" alt="" v-if="!iscommented" @click="comment(2)">
-          <img class="zanitem" src="@/assets/dislike-clicked.png" alt="" v-if="islike && islike === 2">
+          <img
+            class="zanitem"
+            src="@/assets/like-unclicked.png"
+            alt=""
+            v-if="!iscommented"
+            @click="comment(1, requestId)"
+          />
+          <img
+            class="zanitem"
+            src="@/assets/like-clicked.png"
+            alt=""
+            v-if="islike && islike === 1"
+          />
+          <img
+            class="zanitem"
+            src="@/assets/dislike-unclicked.png"
+            alt=""
+            v-if="!iscommented"
+            @click="comment(-1, requestId)"
+          />
+          <img
+            class="zanitem"
+            src="@/assets/dislike-clicked.png"
+            alt=""
+            v-if="islike && islike === -1"
+          />
         </div>
         <div class="zan-feedback" v-if="type === 5 && !isSubmit && zanfeedVis">
           <div class="header" v-if="header.length != 0 && header.split(' ').join('').length != 0">{{ header }}</div>
           <el-row class="button-content">
-            <el-button @click="getCheck(1)" size="medium" :type="checked === 1 ? 'primary' : ''" round>答非所问</el-button>
-            <el-button @click="getCheck(2)" size="medium" :type="checked === 2 ? 'primary' : ''" round>没有答案</el-button>
-            <el-button @click="getCheck(3)" size="medium" :type="checked === 3 ? 'primary' : ''" round>操作后无效</el-button>
-            <el-button @click="getCheck(4)" size="medium" :type="checked === 4 ? 'primary' : ''" round>其他-请补充</el-button>
+            <el-button
+              @click="getCheck(1)"
+              size="medium"
+              :type="checked === 1 ? 'primary' : ''"
+              round
+              >答非所问</el-button
+            >
+            <el-button
+              @click="getCheck(2)"
+              size="medium"
+              :type="checked === 2 ? 'primary' : ''"
+              round
+              >没有答案</el-button
+            >
+            <el-button
+              @click="getCheck(3)"
+              size="medium"
+              :type="checked === 3 ? 'primary' : ''"
+              round
+              >操作后无效</el-button
+            >
+            <el-button
+              @click="getCheck(4)"
+              size="medium"
+              :type="checked === 4 ? 'primary' : ''"
+              round
+              >其他-请补充</el-button
+            >
           </el-row>
           <el-input
             class="suggest_content"
@@ -97,7 +128,7 @@
             v-model="badsuggest">
           </el-input>
           <el-row class="check-button">
-            <el-button size="medium" @click="submit">提交</el-button>
+            <el-button size="medium" @click="submit(requestId)">提交</el-button>
             <el-button size="medium" @click="cancelsub">取消</el-button>
           </el-row>
         </div>
@@ -115,12 +146,20 @@
 </template>
 
 <script>
-import { getChatapi } from '@/api/post';
+import { getQabotChat, satisfaction } from "@/api/post";
 import MarkdownIt from 'markdown-it'
 
 export default {
   name: 'LeftItem',
-  props: ['type', 'content', 'header', 'moreDoc', 'question'],
+  props: [
+    "type",
+    "content",
+    "header",
+    "moreDoc",
+    "question",
+    "requestId",
+    "docText",
+  ],
   data: () => {
     return {
       md: '',
@@ -137,8 +176,9 @@ export default {
       iscommented: false,
       islike: undefined,
       tableData: [],
-      badsuggest: '',
-      checked: null
+      badsuggest: "",
+      checked: null,
+      feedbackTag: "",
     };
   },
   watch: {
@@ -146,6 +186,9 @@ export default {
   created() {
     this.initData();
     this.Time();
+    if (this.type == 4) {
+      this.aitext = this.content;
+    }
   },
   mounted() {
     this.md = new MarkdownIt({
@@ -153,62 +196,70 @@ export default {
     })
   },
   methods: {
-    submit() {
-      this.$message('反馈成功!')
-      this.isSubmit = true
+    submit(requestId) {
+      switch (this.checked) {
+        case 1:
+          this.feedbackTag = "答非所问";
+          break;
+        case 2:
+          this.feedbackTag = "没有答案";
+          break;
+        case 3:
+          this.feedbackTag = "操作后无效";
+          break;
+        case 4:
+          this.feedbackTag = "其他-请补充";
+          break;
+      }
+      const params = {
+        degree: -1,
+        feedback_tag: this.feedbackTag,
+        comment: this.badsuggest,
+        request_id: requestId,
+      };
+      satisfaction(params).then((res) => {
+        this.$message("反馈成功!");
+        this.isSubmit = true;
+      });
     },
     cancelsub() {
       this.zanfeedVis = false
     },
     initData() {
       if (this.type === 1) {
-        if(this.content.indexOf('{') === -1) {
-          this.welcomeTitle = this.content;
-        } else {
-          this.welcomeTitle = this.content.substring(0, this.content.indexOf('{'));
-          this.tableData = this.content.substring(this.content.indexOf('{') + 1, this.content.indexOf('}')).split(';');
-        }
+        this.welcomeTitle = this.content[0];
+        this.tableData = this.content[0];
       }
       if (this.type === 0) {
-        this.welcomeTitle = this.content.substring(0, this.content.indexOf('['));
-        this.welcomeNote = this.content.substring(this.content.indexOf('[') + 1, this.content.indexOf(']'));
-        this.tableData = this.content
-          .substring(this.content.indexOf('{') + 1, this.content.indexOf('}'))
-          .split(';');
+        this.welcomeTitle = this.content[0];
+        this.welcomeNote = this.content[1];
+        this.tableData = this.content[0];
       }
       // 匹配智能机器人回答
       if (this.type === 4) {
-        this.getAi()
       }
-    },
-    getAi() {
-      getChatapi(this.question, {
-        message: (res) => {
-          this.$emit('divMove') // 没刷新一次数据就向父组件传递数据动态实时查询数据
-          this.mdText += JSON.parse(res) // 去除双引号
-          this.aitext = this.md.render(this.mdText)
-        },
-        close: () => {
-          // 监听chatapi接口数据是否输出完毕
-          this.$emit('chatover')
-        }
-      })
     },
     getMsg(msg) {
-      this.$emit('getMsg', msg);
+      this.$emit("getMsg", msg);
     },
     getCheck(value) {
-      this.checked = value
+      this.checked = value;
     },
-    comment(type) {
-      this.iscommented = true;
-      this.islike = type;
-      if (type === 1) {
-        this.$message('反馈成功!')
-      } else {
-        this.$emit('badreq');
-        this.zanfeedVis = true;
-      }
+    comment(type, requestId) {
+      const params = {
+        degree: type, // 1表示满意，-1表示不满意
+        request_id: requestId,
+      };
+      satisfaction(params).then((res) => {
+        this.iscommented = true;
+        this.islike = type;
+        if (type === 1) {
+          this.$message("反馈成功!");
+        } else {
+          this.$emit("badreq", requestId);
+          this.zanfeedVis = true;
+        }
+      });
     },
     jump(path) {
       if(path.charAt(path.length - 1) === '/') {
@@ -234,7 +285,7 @@ export default {
 ::deep .el-loading-spinner .circular {
     height: 30px!important;
     width: 30px!important;
-    animation: loading-rotate 2s linear infinite;
+  animation: loading-rotate 2s linear infinite;
 }
 </style>
 <style scoped lang="scss">
@@ -250,19 +301,26 @@ export default {
     color: #333333;
   }
 }
+.cursorPointer{
+  cursor: pointer;
+}
 .leftcontainer {
   display: flex;
   padding: 10px 15px;
   margin-right: 60px;
 
-  .head {
-    width: 60px;
-    height: 60px;
+  .headcore {
+    margin-left: 15px;
+    .head {
+      width: 60px;
+      height: 60px;
+    }
   }
 
   .content {
     position: relative;
-    margin-left: 33px;
+    max-width: 85%;
+    margin-left: 14px;
     margin-top: 10px;
     .zan-box {
       position: absolute;
@@ -270,10 +328,10 @@ export default {
       flex-direction: column;
       bottom: 0;
       right: -25px;
-      .zanitem{
+      .zanitem {
         width: 25px;
         height: 25px;
-        cursor:pointer;
+        cursor: pointer;
         margin-top: 3px;
       }
     }
@@ -333,6 +391,7 @@ export default {
       background-color: #e6f7ff;
       padding: 7px 16px;
       font-size: 16px;
+      line-height: 1.7;
       font-family: Microsoft YaHei UI;
       font-weight: 400;
       color: #000000;
@@ -344,43 +403,43 @@ export default {
       }
       .listBefore {
         margin-top: 10px;
-        .docList{
-          .docTitle{
-            color: #4270E0;
+        .docList {
+          .docTitle {
+            color: #4270e0;
             cursor: pointer;
             &:hover {
-              color: #FF0000;
+              color: #ff0000;
             }
           }
-          .docVersion{
+          .docVersion {
             margin-top: 10px;
             font-size: 14px;
           }
-          .docContent{
+          .docContent {
             margin-top: 10px;
           }
         }
       }
       .listEnd {
         margin-top: 10px;
-        .docList{
-          .docTitle{
-            color: #4270E0;
+        .docList {
+          .docTitle {
+            color: #4270e0;
             cursor: pointer;
             &:hover {
-              color: #FF0000;
+              color: #ff0000;
             }
           }
-          .docVersion{
+          .docVersion {
             margin-top: 10px;
             font-size: 14px;
           }
-          .docContent{
+          .docContent {
             margin-top: 10px;
           }
         }
       }
-      .bottomTitle{
+      .bottomTitle {
         color: #0071c8;
         position: relative;
         cursor: pointer;
@@ -399,7 +458,7 @@ export default {
         border-radius: 1px;
         margin: 16px 0 16px;
       }
-      .realize_more{
+      .realize_more {
         margin-top: 10px;
         .itemmsg {
           color: #0064c8;
@@ -414,12 +473,13 @@ export default {
       line-height: 2;
       opacity: 0.8;
       border-radius: 4px;
-      background-color: #eeeeee;
+      background-color: #e6f7ff;
       padding: 7px 16px;
       font-size: 16px;
       font-family: Microsoft YaHei UI;
       font-weight: 400;
       color: #000000;
+      word-wrap:break-word;
     }
     .zan-feedback {
       width: 500px;
@@ -433,7 +493,6 @@ export default {
       color: #000000;
       .header {
         font-size: 16px;
-        margin-top: 10px;
         margin-bottom: 10px;
         font-weight: bold;
       }
@@ -443,7 +502,7 @@ export default {
       .suggest_content {
         margin: 10px 0 7px 0;
       }
-      .check-button{
+      .check-button {
         margin: 10px 0 10px 0;
       }
     }
