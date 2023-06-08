@@ -3,7 +3,7 @@
     <AppContent :pc-top="0" :mobile-top="0">
       <div class="atom">
         <p class="atom-text">openEuler 是由开放原子开源基金会（OpenAtom Foundation）孵化及运营的开源项目</p>
-        <a href="https://openatom.cn/home" target="_blank">
+        <a href="https://openatom.cn/home" target="_blank" rel="noopener noreferrer">
           <img src="@/assets/common/footer/atom-logo.png" class="atom-logo" alt="openEuler" />
         </a>
       </div>
@@ -56,7 +56,7 @@
                 v-for="item in linksData"
                 :key="item.id"
                 :href="item.path"
-                rel="nofollow"
+                rel="nofollow noopener noreferrer"
                 class="links-logo"
                 target="_blank"
               >
