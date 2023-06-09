@@ -49,7 +49,6 @@ module.exports = {
     'no-undef': 2, // 任何对未声明的变量的引用都会导致警告
     'no-unused-vars': [1, { 'args': 'none' }], // 消除未使用的变量  不检查函数的参数
     'prefer-promise-reject-errors': 0,
-    'quotes': [1, 'single'], // 引号类型 `` "" ''
     'no-dupe-args': 2,// 函数参数不能重复
     'no-irregular-whitespace': 2,// 不能有不规则的空格
     'spaced-comment': ['error', 'always', { // 注释规则
