@@ -317,7 +317,6 @@ export default {
     position: relative;
     max-width: 85%;
     margin-left: 14px;
-    margin-top: 10px;
     .zan-box {
       position: absolute;
       display: flex;
