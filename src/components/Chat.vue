@@ -70,6 +70,16 @@
           </ul>
         </div>
       </div>
+      <div class="aside_search">
+        <div class="footer_title">最近搜索</div>
+        <div class="footer_content">
+          <ul>
+            <li class="itemmsg" v-for="(record, index) in records" :key="index" @click="fillKeyword(record)">
+              <span>{{ record }}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
     <el-dialog
       title="意见反馈"
@@ -114,6 +124,7 @@ export default {
   components: { LeftItem, RightItem },
   data: () => {
     return {
+      records: [],
       question: '',
       header: '',
       doneFlag: true,
@@ -144,7 +155,7 @@ export default {
       return (
         this.text.length === 0 || this.text.split(' ').join('').length === 0
       );
-    },
+    }
   },
   created() {
     this.msglist.push({
@@ -158,8 +169,13 @@ export default {
   },
   mounted() {
     this.initData("");
+    // 从本地存储中读取搜索记录
+    this.records = JSON.parse(localStorage.getItem("records")) || [];
   },
   methods: {
+    fillKeyword(keyword) {
+      this.text = keyword;
+    },
     // eventStream动态输出回答时实时监听滚动条底部距离并调用拖动方法
     divMove() {
       this.scrollToBottom()
@@ -236,6 +252,15 @@ export default {
       ) {
         return;
       } else {
+        // 搜索的同时处理搜索项到本地存储
+        let records = JSON.parse(localStorage.getItem("records")) || [];
+        // 去重
+        if (!records.includes(this.text.trim())) {
+          records.unshift(this.text.trim());
+        }
+        localStorage.setItem("records", JSON.stringify(records.slice(0, 3)));
+        // 从本地存储中读取搜索记录
+        this.records = JSON.parse(localStorage.getItem("records")) || [];
         this.msglist.push({
           type: 1,
           content: this.text,
@@ -547,6 +572,7 @@ export default {
   }
   }
   .aside {
+    position: relative;
     width: 300px;
     height: 788px;
     background: #ffffff;
@@ -599,6 +625,35 @@ export default {
     }
     .aside_footer {
       margin: 18px 25px 16px 24px;
+      .footer_title {
+        font-weight: 700;
+        font-family: Microsoft YaHei;
+        font-size: 20px;
+        color: #000;
+        line-height: 29px;
+        text-align: center;
+        display: inline-block;
+        margin-bottom: 10px;
+      }
+      .footer_content {
+        .itemmsg {
+          color: #0064c8;
+          margin-top: 10px;
+          font-size: 16px;
+          margin: 15px auto 15px;
+          cursor: pointer;
+          font-family: Microsoft Yahei,Open Sans,Helvetica,Tahoma,Arial,Hiragino Sans GB,WenQuanYi Micro Hei,sans-serif;
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+    .aside_search {
+      margin: 18px 25px 16px 24px;
+      position: absolute;
+      bottom: 0; /* 将页脚div定位在父级div底部 */
+      height: 173px; /* 页脚div高度 */
       .footer_title {
         font-weight: 700;
         font-family: Microsoft YaHei;
