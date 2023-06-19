@@ -10,7 +10,7 @@
       <div class="content">
         <div class="welcomeMsg" v-if="type === 0">
           <div class="welcome_user">
-            尊敬的用户，您好！欢迎使用欧拉小智，很高兴为您服务，请问您遇到什么问题了？
+            尊敬的用户，您好！欢迎使用openEuler小智，很高兴为您服务，请问您遇到什么问题了？
           </div>
         </div>
         <div class="aitext welcomeMsg" v-if="type === 1">

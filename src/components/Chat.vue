@@ -3,7 +3,7 @@
     <div class="maincontainer">
       <div class="appheader">
         <img src="@/assets/Euler.png" alt="" class="headerSrc" />
-        <span class="title">欢迎使用欧拉小智</span>
+        <span class="title">欢迎使用openEuler小智</span>
       </div>
       <div class="container" id="container" ref="container">
         <div class="list" id="list" ref="list">
@@ -458,7 +458,7 @@ export default {
       font-size: 24px;
       font-family: Microsoft YaHei;
       font-weight: bold;
-      margin: 15px 581px 16px 106px !important;
+      margin: 15px 515px 16px 106px !important;
       color: #333333;
       position: relative;
       top: -50px;
