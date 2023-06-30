@@ -30,11 +30,6 @@
           <div v-html="content"></div>
         </div>
         <div class="text" v-if="type === 3">
-            <div class="header cursorPointer"  @click="jump(docText.path)" v-html="docText.title"
-            v-if="docText.title.length != 0 && docText.title.split(' ').join('').length != 0"
-          > </div>
-          <div v-html="docText.textContent"></div>
-          <div class="titledivider"></div>
           <div class="welcome_user" v-if="content.length > 0">
             您可能想了解的是:
           </div>
@@ -51,14 +46,30 @@
             >
           </div>
         </div>
-        <div
-          class="text"
-          v-if="
-            (moreDoc.length != 0 && type === 1) ||
-            (moreDoc.length != 0 && type === 3)
-          "
-        >
+        <div class="text" v-if="moreDoc.length != 0 && type === 1 || moreDoc.length != 0 && type === 3">
           <div class="titledivider"></div>
+          <div class="welcome_question">更多文档库内容:</div>
+          <div class="listBefore" v-for="(item, index) in moreDoc.slice(0, 2)" :key="item.id">
+            <div class="docList">
+              <div class="docTitle">{{ index + 1 }}.<span v-html="item.title" @click="jump(item.path)"></span></div>
+              <div class="docVersion" v-if="item.version && item.version.length !== 0 && item.version.split(' ').join('').length !== 0">版本: {{ item.version }}</div>
+            </div>
+          </div>
+          <div class="listEnd" v-for="(item, index) in moreDoc.slice(2)" :key="item.id">
+            <div v-if="showDoc">
+              <div class="docList">
+                <div class="docTitle">{{ index + 3 }}.<span v-html="item.title" @click="jump(item.path)"></span></div>
+                <div class="docVersion" v-if="item.version && item.version.length !== 0 && item.version.split(' ').join('').length !== 0">版本: {{ item.version }}</div>
+              </div>
+            </div>
+          </div>
+          <div v-if="moreDoc.length > 5">
+            <div class="titledivider"></div>
+            <div @click="showDoc = showDoc ? false : true" class="bottomTitle">
+              <span class="showMore">{{ showDoc ? "收起" : "查看更多" }}</span>
+              <i :class="showDoc ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"></i>
+            </div>
+          </div>
         </div>
         <div class="zan-box" v-if="type != 0 && type != 5">
           <img
@@ -316,6 +327,7 @@ export default {
   .content {
     position: relative;
     max-width: 85%;
+    margin-top: 8px;
     margin-left: 14px;
     .zan-box {
       position: absolute;

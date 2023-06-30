@@ -75,7 +75,7 @@
         <div class="footer_content">
           <ul>
             <li class="itemmsg" v-for="(record, index) in records" :key="index" @click="fillKeyword(record)">
-              <span>{{ record }}</span>
+              <span>{{ formatText(record) }}</span>
             </li>
           </ul>
         </div>
@@ -193,6 +193,13 @@ export default {
         });
       });
     },
+    formatText(str) {
+      if (str.length > 20) {
+        return str.slice(0, 20) + '...';
+      } else {
+        return str;
+      }
+    },
     handleDraggable(config) {
       if (config.dragging) {
         this.style = {
@@ -254,9 +261,10 @@ export default {
       } else {
         // 搜索的同时处理搜索项到本地存储
         let records = JSON.parse(localStorage.getItem("records")) || [];
-        // 去重
-        if (!records.includes(this.text.trim())) {
-          records.unshift(this.text.trim());
+        // 添加数据并去重
+        let record = this.text.trim()
+        if (!records.includes(record)) {
+          records.unshift(record);
         }
         localStorage.setItem("records", JSON.stringify(records.slice(0, 3)));
         // 从本地存储中读取搜索记录
@@ -279,8 +287,17 @@ export default {
     },
     getChat(params, type) {
       getMoreDoc(params.question).then((res) => {
-        if (res.status === 200) {
-          this.docText = res.obj?.records[0];
+        if (res.status === 200 && res.obj) {
+          this.moreDoc = [];
+          res.obj.records.forEach((item) => {
+            item.title = item.title.replaceAll(
+              '<span>',
+              '<span style="color:#AD0D00">'
+            );
+            this.moreDoc.push(item);
+          });
+        } else {
+          this.moreDoc = [];
         }
         if (!this.docText) {
           this.docText = {};
@@ -653,7 +670,7 @@ export default {
       margin: 18px 25px 16px 24px;
       position: absolute;
       bottom: 0; /* 将页脚div定位在父级div底部 */
-      height: 173px; /* 页脚div高度 */
+      height: 193px; /* 页脚div高度 */
       .footer_title {
         font-weight: 700;
         font-family: Microsoft YaHei;
