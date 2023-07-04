@@ -402,6 +402,9 @@ export default {
       font-family: Microsoft YaHei UI;
       font-weight: 400;
       color: #000000;
+      word-wrap:break-word;
+      word-break:break-all;
+      overflow: hidden;
       .header {
         font-size: 18px;
         margin-top: 10px;
