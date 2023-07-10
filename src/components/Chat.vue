@@ -109,7 +109,7 @@
 
 <script>
 import defaultSettings from '@/config/defaultSettings.js';
-import {asideOrders, hootList} from '@/config/asideData.js'
+import {asideOrders, hootList, domainIds} from '@/config/asideData.js'
 import {
   getChatSuggestions,
   userFeedback,
@@ -143,7 +143,7 @@ export default {
       sessionId: "",
       requestId: "",
       docTextType:0,
-      domainIds:["ee878276-a0f8-4e09-a21d-3189c02f8194","7b782452-57c0-4647-a069-d8ffa478c110","89f1e0b1-327f-4a3d-bfe4-aeb869f51bb4","cb44c40c-2da8-4398-952f-21e1852ca22d","2e7ea6e7-2c27-4032-8b88-50484b76ebf4","f1d7b407-36a6-497c-9125-8be94d3ac9f9","334b72c3-fb14-455d-a6a1-3e3f3d1add0e","e4a1689e-7928-436d-9139-d5ec7e39ad43","4998e48c-8015-41f1-b3db-71bd6af2e663","2d090757-5496-45f9-8743-c7821cbbef14"],
+      domainIds: domainIds,
     };
   },
   updated() {
