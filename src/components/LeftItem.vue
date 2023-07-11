@@ -396,7 +396,7 @@ export default {
       opacity: 0.8;
       border-radius: 4px;
       background-color: #e6f7ff;
-      padding: 7px 16px;
+      padding: 7px 23px;
       font-size: 16px;
       line-height: 1.7;
       font-family: Microsoft YaHei UI;
