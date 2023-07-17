@@ -467,18 +467,19 @@ export default {
       position: relative;
       width: 48px;
       height: 48px;
-      margin: 8px 803px 8px 38px;
+      margin: 8px 19px 8px 38px;
+      display: inline-block;
+      vertical-align: middle;
     }
     .title {
-      width: 202px;
+      width: 270px;
       height: 31px;
       font-size: 24px;
       font-family: Microsoft YaHei;
       font-weight: bold;
-      margin: 15px 515px 16px 106px !important;
       color: #333333;
-      position: relative;
-      top: -50px;
+      display: inline-block;
+      vertical-align: middle;
     }
   }
   .container {
