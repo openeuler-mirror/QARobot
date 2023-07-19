@@ -600,6 +600,7 @@ export default {
     margin: 88px auto 24px;
     margin-left: 20px;
     .aside_header {
+      width: 80px;
       font-weight: 700;
       font-family: Microsoft YaHei;
       font-size: 20px;
@@ -610,6 +611,7 @@ export default {
       display: inline-block;
     }
     .aside_content {
+      width: 270px;
       display: flex;
       flex-wrap: wrap;
       margin: 0 15px 0;
