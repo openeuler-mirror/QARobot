@@ -20,7 +20,7 @@ function postRequest(url, data) {
 function getRequest(url, data) {
   return new Promise((resolve, reject) => {
     axios
-      .get(url, data)
+      .get(`${url}?search=${data}`)
       .then((res) => {
         resolve(res);
       })
@@ -31,6 +31,11 @@ function getRequest(url, data) {
         reject(err);
       });
   });
+}
+
+// 请求issue列表
+export function getMoreIssues(inputText) {
+  return getRequest('/issues', inputText);
 }
 
 // 请求chatapi

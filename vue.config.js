@@ -1,6 +1,13 @@
 module.exports = {
     devServer: {
         proxy: {
+            '/issues': {
+                target: 'https://ipb.osinfra.cn',
+                changeOrigin: true,
+                pathRewrite: {
+                    '^/api': '/'
+                }
+            },
             '/qabot/': {
                 target: 'https://dsapi.osinfra.cn/query',
                 changeOrigin: true,
