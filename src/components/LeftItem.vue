@@ -71,6 +71,29 @@
             </div>
           </div>
         </div>
+        <div class="text" v-if="moreIssue.length != 0 && type === 1 || moreIssue.length != 0 && type === 3">
+          <div class="titledivider"></div>
+          <div class="welcome_question">更多相关Issue:</div>
+          <div class="listBefore" v-for="(item, index) in moreIssue.slice(0, 2)" :key="item.id">
+            <div class="docList">
+              <div class="docTitle">{{ index + 1 }}.<span v-html="item.title" @click="jumpIssue(item.link)"></span></div>
+            </div>
+          </div>
+          <div class="listEnd" v-for="(item, index) in moreIssue.slice(2)" :key="item.id">
+            <div v-if="showIssue">
+              <div class="docList">
+                <div class="docTitle">{{ index + 3 }}.<span v-html="item.title" @click="jumpIssue(item.link)"></span></div>
+              </div>
+            </div>
+          </div>
+          <div v-if="moreIssue.length > 5">
+            <div class="titledivider"></div>
+            <div @click="showIssue = showIssue ? false : true" class="bottomTitle">
+              <span class="showMore">{{ showIssue ? "收起" : "查看更多" }}</span>
+              <i :class="showIssue ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"></i>
+            </div>
+          </div>
+        </div>
         <div class="zan-box" v-if="type != 0 && type != 5">
           <img
             class="zanitem"
@@ -163,6 +186,7 @@ export default {
     "content",
     "header",
     "moreDoc",
+    "moreIssue",
     "question",
     "requestId",
     "docText",
@@ -180,6 +204,7 @@ export default {
       welcomeNote: '',
       showMsg: false,
       showDoc: false,
+      showIssue: false,
       iscommented: false,
       islike: undefined,
       tableData: [],
@@ -276,6 +301,9 @@ export default {
       } else {
         window.open('https://www.openeuler.org/' + path + '.html')
       }
+    },
+    jumpIssue(link) {
+      window.open(link)
     },
     Time() {
       let hour = new Date().getHours();

@@ -20,6 +20,7 @@
                 :header="item.header"
                 :content="item.content"
                 :moreDoc="item.moreDoc"
+                :moreIssue="item.moreIssue"
                 :docText="item.docText"
                 :requestId="item.requestId"
                 @badreq="badreq"
@@ -112,6 +113,7 @@ import defaultSettings from '@/config/defaultSettings.js';
 import {asideOrders, hootList, domainIds} from '@/config/asideData.js'
 import {
   getChatSuggestions,
+  getMoreIssues,
   userFeedback,
   getQabotChat,
   getMoreDoc,
@@ -134,6 +136,7 @@ export default {
       msgType: '',
       msglist: [],
       moreDoc: [],
+      moreIssue: [],
       docText: {},
       rate: 0,
       hootList: hootList,
@@ -163,6 +166,7 @@ export default {
       type: 0,
       content: "",
       moreDoc: this.moreDoc,
+      moreIssue: this.moreIssue,
       me: false,
       requestId: this.requestId,
     });
@@ -303,6 +307,27 @@ export default {
           this.docText = {};
         }
       });
+      getMoreIssues(params.question).then((res) => {
+        console.log(res)
+        if (res.data) {
+          this.moreIssue = [];
+          res.data.forEach((item) => {
+            const colorStyle = '<span style="color:#AD0D00">';
+            if (item.title.indexOf(params.question) !== -1) {
+              const startPos = item.title.indexOf(params.question);
+              const endPos = startPos + params.question.length;
+              const highlightedStr = item.title.slice(0, startPos) + colorStyle + item.title.slice(startPos, endPos) + '</span>' + item.title.slice(endPos);
+              item.title = highlightedStr;
+            }
+            this.moreIssue.push(item);
+          });
+        } else {
+          this.moreIssue = [];
+        }
+        if (!this.docText) {
+          this.docText = {};
+        }
+      });
       getQabotChat(params).then((res) => {
         if (res) {
           this.requestId = res.request_id;
@@ -350,6 +375,7 @@ export default {
                 type: 3,
                 content: "",
                 moreDoc: this.moreDoc,
+                moreIssue: this.moreIssue,
                 docText: this.docText,
                 me: false,
                 requestId: this.requestId,
@@ -360,6 +386,7 @@ export default {
                 type: this.msgType,
                 content: this.msg,
                 moreDoc: this.moreDoc,
+                moreIssue: this.moreIssue,
                 docText: this.docText,
                 me: false,
                 requestId: this.requestId,
@@ -409,6 +436,7 @@ export default {
         type: this.msgType,
         content: this.msg,
         moreDoc: this.moreDoc,
+        moreIssue: this.moreIssue,
         docText: this.docText,
         me: false,
         requestId: this.requestId,
@@ -435,6 +463,7 @@ export default {
         type: 5,
         content: '',
         moreDoc: [],
+        moreIssue: [],
         me: false,
         requestId: requestIds,
       });
