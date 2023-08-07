@@ -4,7 +4,7 @@
       <span class="righttiem">{{ date }}</span>
     </div>
     <div class="rightcontainer">
-      <img class="head" src="@/assets/头像.png" />
+      <img class="head" src="@/assets/用户头像.png" />
       <div class="content">
         <div class="text" v-if="type === 1">
           {{ content }}
@@ -50,10 +50,11 @@ export default {
   justify-content: center;
   align-items: center;
   .righttiem {
+    font-family: PingFangSC-Regular;
     font-size: 14px;
-    font-family: Microsoft YaHei UI;
+    color: #999999;
+    line-height: 22px;
     font-weight: 400;
-    color: #333333;
   }
 }
 .rightcontainer {
@@ -63,25 +64,41 @@ export default {
   flex-direction: row-reverse;
 
   .head {
-    width: 60px;
-    height: 60px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     border: 1px solid #eee;
   }
 
   .content {
-    margin-right: 28px;
-    margin-top: 10px;
+    position: relative;
+    max-width: 85%;
+    margin-right: 25px;
 
     .text {
-      background: #eeeeee;
+      background: #F7F8FA;
+      border: 1px solid rgba(229,232,240,1);
       word-break: break-all;
       border-radius: 4px;
-      padding: 7px 16px;
-      font-family: Microsoft YaHei UI;
+      padding: 12px;
+      font-family: PingFangSC-Regular;
+      font-size: 14px;
       font-weight: 400;
       color: #000000;
+      line-height: 22px;
       opacity: 1;
+    }
+    .text::after {
+      content: "";
+      position: absolute;
+      top: 17px;
+      right: -7px;
+      width: 15px;
+      height: 15px;
+      background: #F7F8FA;
+      border-top: 1px solid rgb(229, 232, 240);
+      border-right: 1px solid rgb(229, 232, 240);
+      transform: rotate(45deg);
     }
 
     .img {

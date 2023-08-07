@@ -2,7 +2,7 @@
   <div class="appclass">
     <div class="maincontainer">
       <div class="appheader">
-        <img src="@/assets/Euler.png" alt="" class="headerSrc" />
+        <img src="@/assets/机器人形象.png" alt="" class="headerSrc" />
         <span class="title">欢迎使用openEuler小智</span>
       </div>
       <div class="container" id="container" ref="container">
@@ -52,12 +52,12 @@
     <div class="aside">
       <div class="aside_header">常用工具</div>
       <div class="aside_content">
-        <div class="aside_item" v-for="item in asideOrders" :key="item.title" @click="dialogVisible = true">
+        <div class="aside_item" v-for="item in asideOrders" :key="item.title" @click="getTool(item)">
           <a>
             <div class="aside_item_content" style="display:flex;align-item:center;justify-content: center;">
               <img :src="item.src" />
             </div>
-            <div class="">{{item.title}}</div>
+            <div class="aside_item_title">{{item.title}}</div>
           </a>
         </div>
       </div>
@@ -69,6 +69,13 @@
               <span @click="gethot(item.src)">{{ item.title }}</span>
             </li>
           </ul>
+        </div>
+      </div>
+      <div class="aside_footer">
+        <div class="footer_title">友情链接</div>
+        <div class="footer_content" style="cursor: pointer;" @click="gethot('https://hiss.shixizhi.huawei.com/portal/1643780836745113602?sxz-lang=zh_CN&pageId=1643780840505217026')">
+          <img class="footer_content_img" src="@/assets/HISS.png" />
+          <div class="footer_content_word">基础软件服务能力平台</div>
         </div>
       </div>
       <div class="aside_search">
@@ -177,6 +184,13 @@ export default {
     this.records = JSON.parse(localStorage.getItem("records")) || [];
   },
   methods: {
+    getTool(data) {
+      if (data.type === 'RPC') {
+        this.dialogVisible = true
+      } else {
+        window.open(data.path)
+      }
+    },
     fillKeyword(keyword) {
       this.text = keyword;
     },
@@ -477,8 +491,8 @@ export default {
 .appclass {
   display: flex;
   .maincontainer {
-  width: 889px;
-  height: 788px;
+  width: 1135px;
+  height: 995px;
   background: #ffffff;
   box-shadow: 0px 0px 14px rgba(51, 51, 51, 0.16);
   opacity: 1;
@@ -486,28 +500,26 @@ export default {
   margin: 88px auto 24px;
   margin-right: 20px;
   .appheader {
-    width: 889px;
-    height: 8%;
-    background: #afdfff;
+    width: 1135px;
+    height: 80px;
+    background: #e5e8f0;
     opacity: 1;
     // display: fixed;
     vertical-align: middle;
     .headerSrc {
       position: relative;
-      width: 48px;
-      height: 48px;
-      margin: 8px 19px 8px 38px;
+      width: 88px;
+      height: 113px;
+      margin: -42px 19px 8px 40px;
       display: inline-block;
       vertical-align: middle;
     }
     .title {
-      width: 270px;
-      height: 31px;
-      font-size: 24px;
-      font-family: Microsoft YaHei;
-      font-weight: bold;
-      color: #333333;
-      display: inline-block;
+      font-family: PingFangSC-Medium;
+      font-size: 18px;
+      color: #000000;
+      line-height: 26px;
+      font-weight: 500;
       vertical-align: middle;
     }
   }
@@ -524,7 +536,7 @@ export default {
     }
 
     &::-webkit-scrollbar-track {
-      margin: -25px 0 -25px 0;
+      margin: -17px 0 -25px 0;
       border-radius: 5px;
     }
 
@@ -576,7 +588,8 @@ export default {
     }
     .input-send {
       .input {
-        height: 129px;
+        left: 14px;
+        height: 172px;
         .van-field__control {
           min-height: 112px !important;
           &:hover {
@@ -607,12 +620,19 @@ export default {
       .bottomBtn {
         .send {
           position: relative;
-          right: -808px;
-          width: 76px;
-          height: 36px;
+          left: 958px;
+          bottom: 24px;
+          width: 136px;
+          height: 48px;
           border: 0;
-          background: #eeeeee;
+          background: #d7d7d7;
           border-radius: 4px;
+          font-family: PingFangSC-Regular;
+          font-size: 18px;
+          color: #FFFFFF;
+          text-align: center;
+          line-height: 24px;
+          font-weight: 400;
         }
       }
     }
@@ -621,7 +641,7 @@ export default {
   .aside {
     position: relative;
     width: 300px;
-    height: 788px;
+    height: 995px;
     background: #ffffff;
     box-shadow: 0px 0px 14px rgba(51, 51, 51, 0.16);
     opacity: 1;
@@ -630,13 +650,13 @@ export default {
     margin-left: 20px;
     .aside_header {
       width: 80px;
-      font-weight: 700;
-      font-family: Microsoft YaHei;
-      font-size: 20px;
-      color: #000;
-      line-height: 29px;
+      font-weight: 600;
+      font-family: PingFangSC-Regular;
+      font-size: 16px;
+      color: #000000;
+      line-height: 24px;
       text-align: center;
-      margin: 18px 25px 16px 24px;
+      margin: 40px 25px 16px 21px;
       display: inline-block;
     }
     .aside_content {
@@ -660,38 +680,56 @@ export default {
           .aside_item_content {
             display: flex;
             justify-content: center;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            img {
+              width: 30px;
+              height: 30px;
+            }
           }
-          div {
-            font-size: 15px;
-            color: #555;
+          .aside_item_title {
+            font-family: PingFangSC-Regular;
+            font-size: 12px;
+            color: #000000;
             letter-spacing: 0;
             text-align: center;
             line-height: 18px;
+            font-weight: 400;
           }
         }
       }
     }
     .aside_footer {
-      margin: 18px 25px 16px 24px;
+      margin: 40px 25px 16px 30px;
       .footer_title {
-        font-weight: 700;
-        font-family: Microsoft YaHei;
-        font-size: 20px;
-        color: #000;
-        line-height: 29px;
+        font-weight: 600;
+        font-family: PingFangSC-Regular;
+        font-size: 16px;
+        color: #000000;
+        line-height: 24px;
         text-align: center;
         display: inline-block;
         margin-bottom: 10px;
       }
+      .footer_content_img {
+        margin: 16px 156px 6px 27px;
+      }
+      .footer_content_word {
+        font-family: PingFangSC-Regular;
+        font-size: 12px;
+        color: #000000;
+        line-height: 18px;
+        font-weight: 400;
+      }
       .footer_content {
         .itemmsg {
-          color: #0064c8;
+          color: #000000;
           margin-top: 10px;
-          font-size: 16px;
+          font-size: 12px;
+          font-weight: 400;
+          line-height: 18px;
           margin: 15px auto 15px;
           cursor: pointer;
-          font-family: Microsoft Yahei,Open Sans,Helvetica,Tahoma,Arial,Hiragino Sans GB,WenQuanYi Micro Hei,sans-serif;
+          font-family: PingFangSC-Regular;
           &:hover {
             text-decoration: underline;
           }
@@ -699,25 +737,27 @@ export default {
       }
     }
     .aside_search {
-      margin: 18px 25px 16px 24px;
+      margin: 24px 25px 16px 30px;
       position: absolute;
       bottom: 0; /* 将页脚div定位在父级div底部 */
       height: 193px; /* 页脚div高度 */
       .footer_title {
-        font-weight: 700;
-        font-family: Microsoft YaHei;
-        font-size: 20px;
-        color: #000;
-        line-height: 29px;
+        font-weight: 600;
+        font-family: PingFangSC-Regular;
+        font-size: 16px;
+        color: #000000;
+        line-height: 24px;
         text-align: center;
         display: inline-block;
         margin-bottom: 10px;
       }
       .footer_content {
         .itemmsg {
-          color: #0064c8;
+          color: #000000;
           margin-top: 10px;
-          font-size: 16px;
+          font-size: 12px;
+          font-weight: 400;
+          line-height: 18px;
           margin: 15px auto 15px;
           cursor: pointer;
           font-family: Microsoft Yahei,Open Sans,Helvetica,Tahoma,Arial,Hiragino Sans GB,WenQuanYi Micro Hei,sans-serif;

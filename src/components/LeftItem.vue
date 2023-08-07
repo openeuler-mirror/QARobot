@@ -5,7 +5,7 @@
     </div>
     <div class="leftcontainer">
       <div v-if="zanfeedVis" class="headcore">
-        <img class="head" src="@/assets/chatbot.png" />
+        <img class="head" src="@/assets/机器人头像.png" />
       </div>
       <div class="content">
         <div class="welcomeMsg" v-if="type === 0">
@@ -27,7 +27,7 @@
           >
             {{ header }}
           </div>
-          <div v-html="content"></div>
+          <div class="answer_content" v-html="content"></div>
         </div>
         <div class="text" v-if="type === 3">
           <div class="welcome_user" v-if="content.length > 0">
@@ -330,10 +330,11 @@ export default {
   justify-content: center;
   align-items: center;
   .lefttime {
+    font-family: PingFangSC-Regular;
     font-size: 14px;
-    font-family: Microsoft YaHei UI;
+    color: #999999;
+    line-height: 22px;
     font-weight: 400;
-    color: #333333;
   }
 }
 .cursorPointer{
@@ -347,16 +348,15 @@ export default {
   .headcore {
     margin-left: 15px;
     .head {
-      width: 60px;
-      height: 60px;
+      width: 48px;
+      height: 48px;
     }
   }
 
   .content {
     position: relative;
     max-width: 85%;
-    margin-top: 8px;
-    margin-left: 14px;
+    margin-left: 25px;
     .zan-box {
       position: absolute;
       display: flex;
@@ -371,20 +371,22 @@ export default {
       }
     }
     .welcomeMsg {
-      padding: 16px;
+      padding: 12px;
       opacity: 0.8;
       border-radius: 4px;
-      background-color: #e6f7ff;
+      background: #F7F8FA;
+      border: 1px solid rgba(229,232,240,1);
       .welcome_user {
-        margin-top: 8px;
-        font-weight: bold;
+        font-family: PingFangSC-Regular;
+        font-size: 14px;
+        color: #000000;
+        line-height: 22px;
+        font-weight: 400;
       }
       .welcome_notes{
         font-size: 16px;
-        margin-top: 8px;
       }
       .welcome_question{
-        margin-top: 8px;
         font-size: 15px;
       }
       .titledivider {
@@ -420,11 +422,24 @@ export default {
         }
       }
     }
+    .welcomeMsg::before {
+      content: "";
+      position: absolute;
+      top: 16px;
+      left: -7px;
+      width: 15px;
+      height: 15px;
+      background: #F7F8FA;
+      border-bottom: 1px solid rgb(229, 232, 240);
+      border-left: 1px solid rgb(229, 232, 240);
+      transform: rotate(45deg);
+    }
     .text {
       opacity: 0.8;
       border-radius: 4px;
-      background-color: #e6f7ff;
-      padding: 7px 23px;
+      background: #F7F8FA;
+      border: 1px solid rgba(229,232,240,1);
+      padding: 12px;
       font-size: 16px;
       line-height: 1.7;
       font-family: Microsoft YaHei UI;
@@ -434,10 +449,20 @@ export default {
       word-break:break-all;
       overflow: hidden;
       .header {
-        font-size: 18px;
-        margin-top: 10px;
+        font-family: PingFangSC-Regular;
+        font-size: 16px;
+        color: #000000;
+        line-height: 24px;
         margin-bottom: 10px;
-        font-weight: bold;
+        font-weight: 400;
+      }
+      .answer_content {
+        font-family: PingFangSC-Regular;
+        font-size: 14px;
+        color: #000000;
+        text-align: justify;
+        line-height: 22px;
+        font-weight: 400;
       }
       .listBefore {
         margin-top: 10px;
@@ -485,7 +510,6 @@ export default {
         justify-content: flex-end;
       }
       .welcome_user {
-        margin-top: 8px;
         font-weight: bold;
       }
       .titledivider {
@@ -506,6 +530,18 @@ export default {
           }
         }
       }
+    }
+    .text::before {
+      content: "";
+      position: absolute;
+      top: 16px;
+      left: -7px;
+      width: 15px;
+      height: 15px;
+      background: #F7F8FA;
+      border-bottom: 1px solid rgb(229, 232, 240);
+      border-left: 1px solid rgb(229, 232, 240);
+      transform: rotate(45deg);
     }
     .aitext {
       line-height: 2;
