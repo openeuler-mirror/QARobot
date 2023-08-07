@@ -12,25 +12,26 @@
 </template>
 
 <script>
-import Chat from './components/Chat.vue';
-import AppFooter from './components/AppFooter.vue';
+import Chat from './components/Chat.vue'
+import AppFooter from './components/AppFooter.vue'
 
 export default {
   name: 'App',
   components: {
     Chat,
-    AppFooter
+    AppFooter,
   },
-};
+}
 </script>
 
 <style scoped>
-html,body{
+html,
+body {
   height: 100%;
 }
 #app {
   position: absolute;
- 	top: 0;
+  top: 0;
   right: 0;
   bottom: 0;
   left: 0;

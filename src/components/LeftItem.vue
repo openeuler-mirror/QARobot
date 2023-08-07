@@ -46,54 +46,129 @@
             >
           </div>
         </div>
-        <div class="text" v-if="moreDoc.length != 0 && type === 1 || moreDoc.length != 0 && type === 3">
+        <div
+          class="text"
+          v-if="
+            (moreDoc.length != 0 && type === 1) ||
+            (moreDoc.length != 0 && type === 3)
+          "
+        >
           <div class="titledivider"></div>
           <div class="welcome_question">更多文档库内容:</div>
-          <div class="listBefore" v-for="(item, index) in moreDoc.slice(0, 2)" :key="item.id">
+          <div
+            class="listBefore"
+            v-for="(item, index) in moreDoc.slice(0, 2)"
+            :key="item.id"
+          >
             <div class="docList">
-              <div class="docTitle">{{ index + 1 }}.<span v-html="item.title" @click="jump(item.path)"></span></div>
-              <div class="docVersion" v-if="item.version && item.version.length !== 0 && item.version.split(' ').join('').length !== 0">版本: {{ item.version }}</div>
+              <div class="docTitle">
+                {{ index + 1 }}.<span
+                  v-html="item.title"
+                  @click="jump(item.path)"
+                ></span>
+              </div>
+              <div
+                class="docVersion"
+                v-if="
+                  item.version &&
+                  item.version.length !== 0 &&
+                  item.version.split(' ').join('').length !== 0
+                "
+              >
+                版本: {{ item.version }}
+              </div>
             </div>
           </div>
-          <div class="listEnd" v-for="(item, index) in moreDoc.slice(2)" :key="item.id">
+          <div
+            class="listEnd"
+            v-for="(item, index) in moreDoc.slice(2)"
+            :key="item.id"
+          >
             <div v-if="showDoc">
               <div class="docList">
-                <div class="docTitle">{{ index + 3 }}.<span v-html="item.title" @click="jump(item.path)"></span></div>
-                <div class="docVersion" v-if="item.version && item.version.length !== 0 && item.version.split(' ').join('').length !== 0">版本: {{ item.version }}</div>
+                <div class="docTitle">
+                  {{ index + 3 }}.<span
+                    v-html="item.title"
+                    @click="jump(item.path)"
+                  ></span>
+                </div>
+                <div
+                  class="docVersion"
+                  v-if="
+                    item.version &&
+                    item.version.length !== 0 &&
+                    item.version.split(' ').join('').length !== 0
+                  "
+                >
+                  版本: {{ item.version }}
+                </div>
               </div>
             </div>
           </div>
           <div v-if="moreDoc.length > 5">
             <div class="titledivider"></div>
             <div @click="showDoc = showDoc ? false : true" class="bottomTitle">
-              <span class="showMore">{{ showDoc ? "收起" : "查看更多" }}</span>
-              <i :class="showDoc ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"></i>
+              <span class="showMore">{{ showDoc ? '收起' : '查看更多' }}</span>
+              <i
+                :class="showDoc ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"
+              ></i>
             </div>
           </div>
         </div>
-        <div class="text" v-if="moreIssue.length != 0 && type === 1 || moreIssue.length != 0 && type === 3">
+        <!--  <div
+          class="text"
+          v-if="
+            (moreIssue.length != 0 && type === 1) ||
+            (moreIssue.length != 0 && type === 3)
+          "
+        >
           <div class="titledivider"></div>
           <div class="welcome_question">更多相关Issue:</div>
-          <div class="listBefore" v-for="(item, index) in moreIssue.slice(0, 2)" :key="item.id">
+          <div
+            class="listBefore"
+            v-for="(item, index) in moreIssue.slice(0, 2)"
+            :key="item.id"
+          >
             <div class="docList">
-              <div class="docTitle">{{ index + 1 }}.<span v-html="item.title" @click="jumpIssue(item.link)"></span></div>
+              <div class="docTitle">
+                {{ index + 1 }}.<span
+                  v-html="item.title"
+                  @click="jumpIssue(item.link)"
+                ></span>
+              </div>
             </div>
           </div>
-          <div class="listEnd" v-for="(item, index) in moreIssue.slice(2)" :key="item.id">
+          <div
+            class="listEnd"
+            v-for="(item, index) in moreIssue.slice(2)"
+            :key="item.id"
+          >
             <div v-if="showIssue">
               <div class="docList">
-                <div class="docTitle">{{ index + 3 }}.<span v-html="item.title" @click="jumpIssue(item.link)"></span></div>
+                <div class="docTitle">
+                  {{ index + 3 }}.<span
+                    v-html="item.title"
+                    @click="jumpIssue(item.link)"
+                  ></span>
+                </div>
               </div>
             </div>
           </div>
           <div v-if="moreIssue.length > 5">
             <div class="titledivider"></div>
-            <div @click="showIssue = showIssue ? false : true" class="bottomTitle">
-              <span class="showMore">{{ showIssue ? "收起" : "查看更多" }}</span>
-              <i :class="showIssue ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"></i>
+            <div
+              @click="showIssue = showIssue ? false : true"
+              class="bottomTitle"
+            >
+              <span class="showMore">{{
+                showIssue ? '收起' : '查看更多'
+              }}</span>
+              <i
+                :class="showIssue ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"
+              ></i>
             </div>
           </div>
-        </div>
+        </div> -->
         <div class="zan-box" v-if="type != 0 && type != 5">
           <img
             class="zanitem"
@@ -123,7 +198,12 @@
           />
         </div>
         <div class="zan-feedback" v-if="type === 5 && !isSubmit && zanfeedVis">
-          <div class="header" v-if="header.length != 0 && header.split(' ').join('').length != 0">{{ header }}</div>
+          <div
+            class="header"
+            v-if="header.length != 0 && header.split(' ').join('').length != 0"
+          >
+            {{ header }}
+          </div>
           <el-row class="button-content">
             <el-button
               @click="getCheck(1)"
@@ -159,7 +239,8 @@
             type="textarea"
             :rows="7"
             placeholder="请具体描述您的意见"
-            v-model="badsuggest">
+            v-model="badsuggest"
+          >
           </el-input>
           <el-row class="check-button">
             <el-button size="medium" @click="submit(requestId)">提交</el-button>
@@ -167,7 +248,10 @@
           </el-row>
         </div>
         <div class="text" v-if="type === 5 && isSubmit && zanfeedVis">
-          <i style="color: #5cdd5c;margin-right: 4px;" class="el-icon-success"></i>
+          <el-icon
+            style="color: #5cdd5c; margin-right: 4px"
+            name="el-icon-success"
+          ></el-icon>
           <span>已提交</span>
         </div>
       </div>
@@ -176,20 +260,23 @@
 </template>
 
 <script>
-import { getQabotChat, satisfaction } from "@/api/post";
+import { $emit } from '../utils/gogocodeTransfer'
+import { satisfaction } from '@/api/post'
 import MarkdownIt from 'markdown-it'
 
 export default {
+  components: {
+  },
   name: 'LeftItem',
   props: [
-    "type",
-    "content",
-    "header",
-    "moreDoc",
-    "moreIssue",
-    "question",
-    "requestId",
-    "docText",
+    'type',
+    'content',
+    'header',
+    'moreDoc',
+    'moreIssue',
+    'question',
+    'requestId',
+    'docText',
   ],
   data: () => {
     return {
@@ -208,18 +295,17 @@ export default {
       iscommented: false,
       islike: undefined,
       tableData: [],
-      badsuggest: "",
+      badsuggest: '',
       checked: null,
-      feedbackTag: "",
-    };
+      feedbackTag: '',
+    }
   },
-  watch: {
-  },
+  watch: {},
   created() {
-    this.initData();
-    this.Time();
+    this.initData()
+    this.Time()
     if (this.type == 4) {
-      this.aitext = this.content;
+      this.aitext = this.content
     }
   },
   mounted() {
@@ -231,70 +317,70 @@ export default {
     submit(requestId) {
       switch (this.checked) {
         case 1:
-          this.feedbackTag = "答非所问";
-          break;
+          this.feedbackTag = '答非所问'
+          break
         case 2:
-          this.feedbackTag = "没有答案";
-          break;
+          this.feedbackTag = '没有答案'
+          break
         case 3:
-          this.feedbackTag = "操作后无效";
-          break;
+          this.feedbackTag = '操作后无效'
+          break
         case 4:
-          this.feedbackTag = "其他-请补充";
-          break;
+          this.feedbackTag = '其他-请补充'
+          break
       }
       const params = {
         degree: -1,
         feedback_tag: this.feedbackTag,
         comment: this.badsuggest,
         request_id: requestId,
-      };
+      }
       satisfaction(params).then((res) => {
-        this.$message("反馈成功!");
-        this.isSubmit = true;
-      });
+        this.$message('反馈成功!')
+        this.isSubmit = true
+      })
     },
     cancelsub() {
       this.zanfeedVis = false
     },
     initData() {
       if (this.type === 1) {
-        this.welcomeTitle = this.content[0];
-        this.tableData = this.content[0];
+        this.welcomeTitle = this.content[0]
+        this.tableData = this.content[0]
       }
       if (this.type === 0) {
-        this.welcomeTitle = this.content[0];
-        this.welcomeNote = this.content[1];
-        this.tableData = this.content[0];
+        this.welcomeTitle = this.content[0]
+        this.welcomeNote = this.content[1]
+        this.tableData = this.content[0]
       }
       // 匹配智能机器人回答
       if (this.type === 4) {
       }
     },
     getMsg(msg) {
-      this.$emit("getMsg", msg);
+      $emit(this, 'getMsg', msg)
     },
     getCheck(value) {
-      this.checked = value;
+      this.checked = value
     },
     comment(type, requestId) {
       const params = {
         degree: type, // 1表示满意，-1表示不满意
         request_id: requestId,
-      };
+      }
       satisfaction(params).then((res) => {
-        this.iscommented = true;
-        this.islike = type;
+        this.iscommented = true
+        this.islike = type
         if (type === 1) {
-          this.$message("反馈成功!");
+          this.$message('反馈成功!')
         } else {
-          this.$emit("badreq", requestId);
-          this.zanfeedVis = true;
+          $emit(this, 'badreq', requestId)
+          this.zanfeedVis = true
         }
-      });
+      })
     },
     jump(path) {
-      if(path.charAt(path.length - 1) === '/') {
+      if (path.charAt(path.length - 1) === '/') {
         window.open('https://www.openeuler.org/' + path)
       } else if (path.charAt(0) === '/') {
         window.open('https://forum.openeuler.org' + path)
@@ -306,24 +392,27 @@ export default {
       window.open(link)
     },
     Time() {
-      let hour = new Date().getHours();
+      let hour = new Date().getHours()
       let minute =
         new Date().getMinutes() < 10
           ? '0' + new Date().getMinutes()
-          : new Date().getMinutes();
-      this.date = `${hour}:${minute}`;
+          : new Date().getMinutes()
+      this.date = `${hour}:${minute}`
     },
   },
-};
+  emits: ['getMsg', 'badreq'],
+}
 </script>
+
 <style scoped>
 ::deep .el-loading-spinner .circular {
-    height: 30px!important;
-    width: 30px!important;
+  height: 30px !important;
+  width: 30px !important;
   animation: loading-rotate 2s linear infinite;
 }
 </style>
-<style scoped lang="scss">
+
+<style lang="scss" scoped>
 .timearea {
   height: 44px;
   display: flex;
@@ -337,7 +426,7 @@ export default {
     font-weight: 400;
   }
 }
-.cursorPointer{
+.cursorPointer {
   cursor: pointer;
 }
 .leftcontainer {
@@ -374,8 +463,8 @@ export default {
       padding: 12px;
       opacity: 0.8;
       border-radius: 4px;
-      background: #F7F8FA;
-      border: 1px solid rgba(229,232,240,1);
+      background: #f7f8fa;
+      border: 1px solid rgba(229, 232, 240, 1);
       .welcome_user {
         font-family: PingFangSC-Regular;
         font-size: 14px;
@@ -383,10 +472,10 @@ export default {
         line-height: 22px;
         font-weight: 400;
       }
-      .welcome_notes{
+      .welcome_notes {
         font-size: 16px;
       }
-      .welcome_question{
+      .welcome_question {
         font-size: 15px;
       }
       .titledivider {
@@ -423,13 +512,13 @@ export default {
       }
     }
     .welcomeMsg::before {
-      content: "";
+      content: '';
       position: absolute;
       top: 16px;
       left: -7px;
       width: 15px;
       height: 15px;
-      background: #F7F8FA;
+      background: #f7f8fa;
       border-bottom: 1px solid rgb(229, 232, 240);
       border-left: 1px solid rgb(229, 232, 240);
       transform: rotate(45deg);
@@ -437,16 +526,16 @@ export default {
     .text {
       opacity: 0.8;
       border-radius: 4px;
-      background: #F7F8FA;
-      border: 1px solid rgba(229,232,240,1);
+      background: #f7f8fa;
+      border: 1px solid rgba(229, 232, 240, 1);
       padding: 12px;
       font-size: 16px;
       line-height: 1.7;
       font-family: Microsoft YaHei UI;
       font-weight: 400;
       color: #000000;
-      word-wrap:break-word;
-      word-break:break-all;
+      word-wrap: break-word;
+      word-break: break-all;
       overflow: hidden;
       .header {
         font-family: PingFangSC-Regular;
@@ -532,13 +621,13 @@ export default {
       }
     }
     .text::before {
-      content: "";
+      content: '';
       position: absolute;
       top: 16px;
       left: -7px;
       width: 15px;
       height: 15px;
-      background: #F7F8FA;
+      background: #f7f8fa;
       border-bottom: 1px solid rgb(229, 232, 240);
       border-left: 1px solid rgb(229, 232, 240);
       transform: rotate(45deg);
@@ -553,7 +642,7 @@ export default {
       font-family: Microsoft YaHei UI;
       font-weight: 400;
       color: #000000;
-      word-wrap:break-word;
+      word-wrap: break-word;
     }
     .zan-feedback {
       width: 500px;

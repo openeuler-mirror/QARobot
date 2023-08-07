@@ -16,34 +16,36 @@
 </template>
 
 <script>
+import { $emit } from '../utils/gogocodeTransfer'
 export default {
   name: 'RightItem',
   props: ['id', 'type', 'content'],
   data: () => {
     return {
       date: '',
-    };
+    }
   },
   created() {
-    this.Time();
+    this.Time()
   },
   methods: {
     getMsg(msg) {
-      this.$emit('getMsg', msg);
+      $emit(this, 'getMsg', msg)
     },
     Time() {
-      let hour = new Date().getHours();
+      let hour = new Date().getHours()
       let minute =
         new Date().getMinutes() < 10
           ? '0' + new Date().getMinutes()
-          : new Date().getMinutes();
-      this.date = `${hour}:${minute}`;
+          : new Date().getMinutes()
+      this.date = `${hour}:${minute}`
     },
   },
-};
+  emits: ['getMsg'],
+}
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .timearea {
   height: 44px;
   display: flex;
@@ -62,7 +64,6 @@ export default {
   padding: 10px 15px;
   margin-left: 60px;
   flex-direction: row-reverse;
-
   .head {
     width: 48px;
     height: 48px;
@@ -76,8 +77,8 @@ export default {
     margin-right: 25px;
 
     .text {
-      background: #F7F8FA;
-      border: 1px solid rgba(229,232,240,1);
+      background: #f7f8fa;
+      border: 1px solid rgba(229, 232, 240, 1);
       word-break: break-all;
       border-radius: 4px;
       padding: 12px;
@@ -89,13 +90,13 @@ export default {
       opacity: 1;
     }
     .text::after {
-      content: "";
+      content: '';
       position: absolute;
       top: 17px;
       right: -7px;
       width: 15px;
       height: 15px;
-      background: #F7F8FA;
+      background: #f7f8fa;
       border-top: 1px solid rgb(229, 232, 240);
       border-right: 1px solid rgb(229, 232, 240);
       transform: rotate(45deg);

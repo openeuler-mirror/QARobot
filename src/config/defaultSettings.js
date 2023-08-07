@@ -4,4 +4,4 @@
 
 export default {
   DefaultRequestInterval: 1500,
-};
+}
