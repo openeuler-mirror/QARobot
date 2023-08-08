@@ -36,15 +36,28 @@
       </div>
       <div class="bottom">
         <ul id="list" class="poplist">
-          <li class="popitem" v-for="(item, index) in msgData" :key="index" v-html="item"
-            @click="popClick(item)"></li>
+          <li
+            class="popitem"
+            v-for="(item, index) in msgData"
+            :key="index"
+            v-html="item"
+            @click="popClick(item)"
+          ></li>
         </ul>
         <div class="input-send">
-          <van-field :border="false" type="textarea" v-model="text"
-            placeholder="请输入您要咨询的内容，小智会快速回复哒~" class="input" @input="searchData"
-            @keydown.native="listen($event)" />
+          <van-field
+            :border="false"
+            type="textarea"
+            v-model="text"
+            placeholder="请输入您要咨询的内容，小智会快速回复哒~"
+            class="input"
+            @input="searchData"
+            @keydown="listen($event)"
+          />
           <div class="bottomBtn">
-            <el-button class="send" @click="send" :disabled="isDisabled">发送</el-button>
+            <el-button class="send" @click="send" :disabled="isDisabled"
+              >发送</el-button
+            >
           </div>
         </div>
       </div>
@@ -52,12 +65,20 @@
     <div class="aside">
       <div class="aside_header">常用工具</div>
       <div class="aside_content">
-        <div class="aside_item" v-for="item in asideOrders" :key="item.title" @click="getTool(item)">
+        <div
+          class="aside_item"
+          v-for="item in asideOrders"
+          :key="item.title"
+          @click="getTool(item)"
+        >
           <a>
-            <div class="aside_item_content" style="display:flex;align-item:center;justify-content: center;">
+            <div
+              class="aside_item_content"
+              style="display: flex; align-item: center; justify-content: center"
+            >
               <img :src="item.src" />
             </div>
-            <div class="aside_item_title">{{item.title}}</div>
+            <div class="aside_item_title">{{ item.title }}</div>
           </a>
         </div>
       </div>
@@ -65,7 +86,7 @@
         <div class="footer_title">热点追踪</div>
         <div class="footer_content">
           <ul>
-            <li class="itemmsg" v-for="item in hootList" :key="item.title" >
+            <li class="itemmsg" v-for="item in hootList" :key="item.title">
               <span @click="gethot(item.src)">{{ item.title }}</span>
             </li>
           </ul>
@@ -73,7 +94,15 @@
       </div>
       <div class="aside_footer">
         <div class="footer_title">友情链接</div>
-        <div class="footer_content" style="cursor: pointer;" @click="gethot('https://hiss.shixizhi.huawei.com/portal/1643780836745113602?sxz-lang=zh_CN&pageId=1643780840505217026')">
+        <div
+          class="footer_content"
+          style="cursor: pointer"
+          @click="
+            gethot(
+              'https://hiss.shixizhi.huawei.com/portal/1643780836745113602?sxz-lang=zh_CN&pageId=1643780840505217026'
+            )
+          "
+        >
           <img class="footer_content_img" src="@/assets/HISS.png" />
           <div class="footer_content_word">基础软件服务能力平台</div>
         </div>
@@ -82,7 +111,12 @@
         <div class="footer_title">最近搜索</div>
         <div class="footer_content">
           <ul>
-            <li class="itemmsg" v-for="(record, index) in records" :key="index" @click="fillKeyword(record)">
+            <li
+              class="itemmsg"
+              v-for="(record, index) in records"
+              :key="index"
+              @click="fillKeyword(record)"
+            >
               <span>{{ formatText(record) }}</span>
             </li>
           </ul>
@@ -91,42 +125,43 @@
     </div>
     <el-dialog
       title="意见反馈"
-      :visible.sync="dialogVisible"
+      v-model="dialogVisible"
       center
       width="40%"
-      @close="dialogClose">
-      <div style="font-size: 16px;margin-bottom: 15px;">你给小智打几分？</div>
-      <el-rate
-        v-model="rate"
-        show-text
-        style="margin-bottom: 15px;">
+      @close="dialogClose"
+    >
+      <div style="font-size: 16px; margin-bottom: 15px">你给小智打几分？</div>
+      <el-rate v-model="rate" show-text style="margin-bottom: 15px">
       </el-rate>
       <el-input
         type="textarea"
         :rows="7"
         placeholder="请具体描述您的意见，小智会不断学习的"
-        v-model="textarea">
+        v-model="textarea"
+      >
       </el-input>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="feedback">确 定</el-button>
-      </span>
+      <template v-slot:footer>
+        <span class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="feedback">确 定</el-button>
+        </span>
+      </template>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import defaultSettings from '@/config/defaultSettings.js';
-import {asideOrders, hootList, domainIds} from '@/config/asideData.js'
+import defaultSettings from '@/config/defaultSettings.js'
+import { asideOrders, hootList, domainIds } from '@/config/asideData.js'
 import {
   getChatSuggestions,
   getMoreIssues,
   userFeedback,
   getQabotChat,
   getMoreDoc,
-} from "@/api/post";
-import LeftItem from '@/components/LeftItem';
-import RightItem from '@/components/RightItem';
+} from '@/api/post'
+import LeftItem from '@/components/LeftItem'
+import RightItem from '@/components/RightItem'
 
 export default {
   name: 'Chat',
@@ -149,12 +184,12 @@ export default {
       hootList: hootList,
       asideOrders: asideOrders,
       dialogVisible: false,
-      textarea: "",
-      sessionId: "",
-      requestId: "",
-      docTextType:0,
+      textarea: '',
+      sessionId: '',
+      requestId: '',
+      docTextType: 0,
       domainIds: domainIds,
-    };
+    }
   },
   updated() {
     //  dom 元素更新后执行滚动条到底部 否则不生效
@@ -164,24 +199,24 @@ export default {
     isDisabled() {
       return (
         this.text.length === 0 || this.text.split(' ').join('').length === 0
-      );
-    }
+      )
+    },
   },
   created() {
     this.msglist.push({
       header: this.header,
       type: 0,
-      content: "",
+      content: '',
       moreDoc: this.moreDoc,
       moreIssue: this.moreIssue,
       me: false,
       requestId: this.requestId,
-    });
+    })
   },
   mounted() {
-    this.initData("");
+    this.initData('')
     // 从本地存储中读取搜索记录
-    this.records = JSON.parse(localStorage.getItem("records")) || [];
+    this.records = JSON.parse(localStorage.getItem('records')) || []
   },
   methods: {
     getTool(data) {
@@ -192,30 +227,31 @@ export default {
       }
     },
     fillKeyword(keyword) {
-      this.text = keyword;
+      this.text = keyword
     },
     // eventStream动态输出回答时实时监听滚动条底部距离并调用拖动方法
     divMove() {
       this.scrollToBottom()
     },
-    scrollToBottom() { // 滚动条拖动最底部方法
+    scrollToBottom() {
+      // 滚动条拖动最底部方法
       // this.$nextTick 将回调延迟到下次DOM更新循环之后执行。在修改数据之后立即使用它，然后等待DOM更新
       this.$nextTick(() => {
         // dom 元素更新后执行滚动条到底部 否则不生效
-        let scrollElem = this.$refs.container;
+        let scrollElem = this.$refs.container
         // console.log('scrollHeight: ', scrollElem.scrollHeight);
         // scrollElem.scrollTop = scrollElem.scrollHeight
         scrollElem.scrollTo({
           top: scrollElem.scrollHeight,
-          behavior: 'smooth'
-        });
-      });
+          behavior: 'smooth',
+        })
+      })
     },
     formatText(str) {
       if (str.length > 20) {
-        return str.slice(0, 20) + '...';
+        return str.slice(0, 20) + '...'
       } else {
-        return str;
+        return str
       }
     },
     handleDraggable(config) {
@@ -236,29 +272,29 @@ export default {
         session_id: this.sessionId,
         feedback: this.rate,
         comment: this.textarea,
-      };
+      }
       userFeedback(datas).then((res) => {
         if (res.feedback_id) {
-          this.$message.info("反馈成功!");
-          this.dialogVisible = false;
+          this.$message.info('反馈成功!')
+          this.dialogVisible = false
         }
-      });
+      })
     },
     dialogClose() {
-      this.textarea = '';
-      this.rate = 0;
+      this.textarea = ''
+      this.rate = 0
     },
     listen(event) {
-      this.text = this.text.replace(/[\r\n]/g, '');
+      this.text = this.text.replace(/[\r\n]/g, '')
       if (!this.text) {
         if (event.keyCode === 13) {
-          event.preventDefault();
-          return false;
+          event.preventDefault()
+          return false
         }
       }
       if (event.keyCode === 13) {
-        event.preventDefault(); // 阻止浏览器默认换行操作
-        this.send();
+        event.preventDefault() // 阻止浏览器默认换行操作
+        this.send()
       }
     },
     chatover() {
@@ -269,109 +305,114 @@ export default {
       }
     },
     send(type) {
-      this.msgData = [];
-      this.text = this.text.replace(/[\r\n]/g, '');
+      this.msgData = []
+      this.text = this.text.replace(/[\r\n]/g, '')
       if (
         this.text.length === 0 ||
         this.text.split(' ').join('').length === 0
       ) {
-        return;
+        return
       } else {
         // 搜索的同时处理搜索项到本地存储
-        let records = JSON.parse(localStorage.getItem("records")) || [];
+        let records = JSON.parse(localStorage.getItem('records')) || []
         // 添加数据并去重
         let record = this.text.trim()
         if (!records.includes(record)) {
-          records.unshift(record);
+          records.unshift(record)
         }
-        localStorage.setItem("records", JSON.stringify(records.slice(0, 3)));
+        localStorage.setItem('records', JSON.stringify(records.slice(0, 3)))
         // 从本地存储中读取搜索记录
-        this.records = JSON.parse(localStorage.getItem("records")) || [];
+        this.records = JSON.parse(localStorage.getItem('records')) || []
         this.msglist.push({
           type: 1,
           content: this.text,
           me: true,
-        });
+        })
         const params = {
           extend: {
             domain_ids: this.domainIds,
           },
           question: this.text,
-        };
-        this.getChat(params, type);
-        this.question = this.text;
-        this.text = "";
+        }
+        this.getChat(params, type)
+        this.question = this.text
+        this.text = ''
       }
     },
     getChat(params, type) {
       getMoreDoc(params.question).then((res) => {
         if (res.status === 200 && res.obj) {
-          this.moreDoc = [];
+          this.moreDoc = []
           res.obj.records.forEach((item) => {
             item.title = item.title.replaceAll(
               '<span>',
               '<span style="color:#AD0D00">'
-            );
-            this.moreDoc.push(item);
-          });
+            )
+            this.moreDoc.push(item)
+          })
         } else {
-          this.moreDoc = [];
+          this.moreDoc = []
         }
         if (!this.docText) {
-          this.docText = {};
+          this.docText = {}
         }
-      });
+      })
       getMoreIssues(params.question).then((res) => {
         console.log(res)
         if (res.data) {
-          this.moreIssue = [];
+          this.moreIssue = []
           res.data.forEach((item) => {
-            const colorStyle = '<span style="color:#AD0D00">';
+            const colorStyle = '<span style="color:#AD0D00">'
             if (item.title.indexOf(params.question) !== -1) {
-              const startPos = item.title.indexOf(params.question);
-              const endPos = startPos + params.question.length;
-              const highlightedStr = item.title.slice(0, startPos) + colorStyle + item.title.slice(startPos, endPos) + '</span>' + item.title.slice(endPos);
-              item.title = highlightedStr;
+              const startPos = item.title.indexOf(params.question)
+              const endPos = startPos + params.question.length
+              const highlightedStr =
+                item.title.slice(0, startPos) +
+                colorStyle +
+                item.title.slice(startPos, endPos) +
+                '</span>' +
+                item.title.slice(endPos)
+              item.title = highlightedStr
             }
-            this.moreIssue.push(item);
-          });
+            this.moreIssue.push(item)
+          })
         } else {
-          this.moreIssue = [];
+          this.moreIssue = []
         }
         if (!this.docText) {
-          this.docText = {};
+          this.docText = {}
         }
-      });
+      })
       getQabotChat(params).then((res) => {
         if (res) {
-          this.requestId = res.request_id;
-          this.sessionId = res.session_id;
-          this.header = "";
+          this.requestId = res.request_id
+          this.sessionId = res.session_id
+          this.header = ''
           if (res.reply_type == 0 && res.qabot_answers.answers.length > 0) {
-            if (type == "2") {
-              this.msgType = 2;
+            if (type == '2') {
+              this.msgType = 2
             } else {
-              this.msgType = 4; // 小智查找到问题相关信息所返回的数据类型
+              this.msgType = 4 // 小智查找到问题相关信息所返回的数据类型
             }
-            this.header = res.qabot_answers.answers[0].st_question;
-            this.msg = res.qabot_answers.answers[0].answer;
+            this.header = res.qabot_answers.answers[0].st_question
+            this.msg = res.qabot_answers.answers[0].answer
           } else if (
             res.reply_type == 0 &&
             res.qabot_answers.recommend_answers.length > 0
           ) {
-            this.msgType = 3; // 小智推荐的问题
-            this.msg = res.qabot_answers.recommend_answers;
-            this.docTextType=0;
-          } else if ( res.reply_type ==2) {
-            this.msgType = 2;
-            this.msg = res.chat_answers.answer;
-          } else if ( res.reply_type !=0 && res.reply_type !=2) {
-            if(Object.keys(this.docText).length==0) {
-              this.msgType = 1;
-              this.msg ="小智对openEuler比较了解~可以尝试问问我相关问题哦";
-            }else {
-              this.msgType = 3;
-              this.docTextType=1;
+            this.msgType = 3 // 小智推荐的问题
+            this.msg = res.qabot_answers.recommend_answers
+            this.docTextType = 0
+          } else if (res.reply_type == 2) {
+            this.msgType = 2
+            this.msg = res.chat_answers.answer
+          } else if (res.reply_type != 0 && res.reply_type != 2) {
+            if (Object.keys(this.docText).length == 0) {
+              this.msgType = 1
+              this.msg = '小智对openEuler比较了解~可以尝试问问我相关问题哦'
+            } else {
+              this.msgType = 3
+              this.docTextType = 1
             }
           }
           // 小智得数据状态
@@ -381,20 +422,20 @@ export default {
             this.msgType === 2 ||
             this.msgType === 4
           ) {
-            this.itempush();
-          } else if(this.msgType === 3) {
-            if(this.docTextType==1) {
+            this.itempush()
+          } else if (this.msgType === 3) {
+            if (this.docTextType == 1) {
               this.msglist.push({
                 header: this.header,
                 type: 3,
-                content: "",
+                content: '',
                 moreDoc: this.moreDoc,
                 moreIssue: this.moreIssue,
                 docText: this.docText,
                 me: false,
                 requestId: this.requestId,
-              });
-            }else {
+              })
+            } else {
               this.msglist.push({
                 header: this.header,
                 type: this.msgType,
@@ -404,22 +445,22 @@ export default {
                 docText: this.docText,
                 me: false,
                 requestId: this.requestId,
-              });
+              })
             }
           }
         }
-      });
+      })
     },
     popClick(msg) {
       msg = msg
-        .replaceAll('<span style=\'color:#0C7DD4\'>', '')
-        .replaceAll('</span>', '');
-      this.text = msg;
-      this.send();
-      this.msgData = [];
+        .replaceAll("<span style='color:#0C7DD4'>", '')
+        .replaceAll('</span>', '')
+      this.text = msg
+      this.send()
+      this.msgData = []
     },
     searchData() {
-      this.msgData = [];
+      this.msgData = []
       if (this.text) {
         const params = {
           question: this.text,
@@ -427,21 +468,21 @@ export default {
           extend: {
             domain_ids: this.domainIds,
           },
-        };
+        }
         getChatSuggestions(params).then((res) => {
-          this.msgData = [];
+          this.msgData = []
           if (res.questions) {
             res.questions.forEach((item) => {
               if (this.text) {
                 item = item.replaceAll(
                   this.text,
                   `<span style='color:#0C7DD4'>${this.text}</span>`
-                );
-                this.msgData.push(item);
+                )
+                this.msgData.push(item)
               }
-            });
+            })
           }
-        });
+        })
       }
     },
     itempush() {
@@ -454,22 +495,22 @@ export default {
         docText: this.docText,
         me: false,
         requestId: this.requestId,
-      });
+      })
     },
     initData(text) {
       if (this.doneFlag) {
-        this.doneFlag = false;
+        this.doneFlag = false
         setTimeout(() => {
-          this.doneFlag = true;
-        }, defaultSettings.DefaultRequestInterval);
+          this.doneFlag = true
+        }, defaultSettings.DefaultRequestInterval)
       } else {
-        this.$message('您的操作过于频繁,请稍后再试');
-        return;
+        this.$message('您的操作过于频繁,请稍后再试')
+        return
       }
     },
     getMsg(msg) {
-      this.text = msg;
-      this.send("2");
+      this.text = msg
+      this.send('2')
     },
     badreq(requestIds) {
       this.msglist.push({
@@ -480,163 +521,162 @@ export default {
         moreIssue: [],
         me: false,
         requestId: requestIds,
-      });
+      })
     },
   },
-};
+}
 </script>
-<style scoped>
-</style>
-<style scoped lang="scss">
+
+<style lang="scss" scoped>
 .appclass {
   display: flex;
   .maincontainer {
-  width: 1135px;
-  height: 995px;
-  background: #ffffff;
-  box-shadow: 0px 0px 14px rgba(51, 51, 51, 0.16);
-  opacity: 1;
-  border-radius: 0px;
-  margin: 88px auto 24px;
-  margin-right: 20px;
-  .appheader {
     width: 1135px;
-    height: 80px;
-    background: #e5e8f0;
+    height: 995px;
+    background: #ffffff;
+    box-shadow: 0px 0px 14px rgba(51, 51, 51, 0.16);
     opacity: 1;
-    // display: fixed;
-    vertical-align: middle;
-    .headerSrc {
+    border-radius: 0px;
+    margin: 88px auto 24px;
+    margin-right: 20px;
+    .appheader {
+      width: 1135px;
+      height: 80px;
+      background: #e5e8f0;
+      opacity: 1;
+      // display: fixed;
+      vertical-align: middle;
+      .headerSrc {
+        position: relative;
+        width: 88px;
+        height: 113px;
+        margin: -42px 19px 8px 40px;
+        display: inline-block;
+        vertical-align: middle;
+      }
+      .title {
+        font-family: PingFangSC-Medium;
+        font-size: 18px;
+        color: #000000;
+        line-height: 26px;
+        font-weight: 500;
+        vertical-align: middle;
+      }
+    }
+    .container {
+      height: 70%;
+      overflow: auto;
+      &:hover {
+        overflow-y: auto;
+      }
+
+      &::-webkit-scrollbar {
+        width: 6px;
+        color: transparent;
+      }
+
+      &::-webkit-scrollbar-track {
+        margin: -17px 0 -25px 0;
+        border-radius: 5px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background-color: rgba(136, 153, 152, 0.3);
+        border-radius: 5px;
+      }
+
+      &::-webkit-scrollbar-button {
+        background-color: transparent;
+        border-radius: 5px;
+      }
+      ul {
+        padding: 0;
+        margin: 0;
+      }
+
+      li {
+        list-style: none;
+      }
+
+      .list {
+        width: 100%;
+      }
+    }
+    ::v-deep .bottom {
       position: relative;
-      width: 88px;
-      height: 113px;
-      margin: -42px 19px 8px 40px;
-      display: inline-block;
-      vertical-align: middle;
-    }
-    .title {
-      font-family: PingFangSC-Medium;
-      font-size: 18px;
-      color: #000000;
-      line-height: 26px;
-      font-weight: 500;
-      vertical-align: middle;
-    }
-  }
-  .container {
-    height: 70%;
-    overflow: auto;
-    &:hover {
-      overflow-y: auto;
-    }
-
-    &::-webkit-scrollbar {
-      width: 6px;
-      color: transparent;
-    }
-
-    &::-webkit-scrollbar-track {
-      margin: -17px 0 -25px 0;
-      border-radius: 5px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background-color: rgba(136, 153, 152, 0.3);
-      border-radius: 5px;
-    }
-
-    &::-webkit-scrollbar-button {
-      background-color: transparent;
-      border-radius: 5px;
-    }
-    ul {
-      padding: 0;
-      margin: 0;
-    }
-
-    li {
-      list-style: none;
-    }
-
-    .list {
-      width: 100%;
-    }
-  }
-  ::v-deep .bottom {
-    position: relative;
-    height: 173px;
-    border-top: 1px solid #b7b7b7;
-    .poplist {
-      border: 1px solid #c1c1c1;
-      border-radius: 4px;
-      margin-left: 19px;
-      background: #fbfbfb;
-      position: absolute;
-      z-index: 1;
-      bottom: 100%;
-      font-size: 14px;
-      font-family: Microsoft YaHei UI;
-      font-weight: 400;
-      color: #333333;
-      .popitem {
-        padding: 5px 40px;
-        cursor: pointer;
+      height: 173px;
+      border-top: 1px solid #b7b7b7;
+      .poplist {
+        border: 1px solid #c1c1c1;
+        border-radius: 4px;
+        margin-left: 19px;
+        background: #fbfbfb;
+        position: absolute;
+        z-index: 1;
+        bottom: 100%;
+        font-size: 14px;
+        font-family: Microsoft YaHei UI;
+        font-weight: 400;
+        color: #333333;
+        .popitem {
+          padding: 5px 40px;
+          cursor: pointer;
+        }
+        .popitem:hover {
+          background: #e5e8f0;
+        }
       }
-      .popitem:hover {
-        background: #e5e8f0;
-      }
-    }
-    .input-send {
-      .input {
-        left: 14px;
-        height: 172px;
-        .van-field__control {
-          min-height: 112px !important;
-          &:hover {
-            overflow-y: auto;
-          }
+      .input-send {
+        .input {
+          left: 14px;
+          height: 172px;
+          .van-field__control {
+            min-height: 112px !important;
+            &:hover {
+              overflow-y: auto;
+            }
 
-          &::-webkit-scrollbar {
-            width: 7px;
-            color: transparent;
-          }
+            &::-webkit-scrollbar {
+              width: 7px;
+              color: transparent;
+            }
 
-          &::-webkit-scrollbar-track {
-            margin: -25px 0 -25px 0;
-            border-radius: 5px;
-          }
+            &::-webkit-scrollbar-track {
+              margin: -25px 0 -25px 0;
+              border-radius: 5px;
+            }
 
-          &::-webkit-scrollbar-thumb {
-            background-color: rgba(136, 153, 152, 0.3);
-            border-radius: 5px;
-          }
+            &::-webkit-scrollbar-thumb {
+              background-color: rgba(136, 153, 152, 0.3);
+              border-radius: 5px;
+            }
 
-          &::-webkit-scrollbar-button {
-            background-color: transparent;
-            border-radius: 5px;
+            &::-webkit-scrollbar-button {
+              background-color: transparent;
+              border-radius: 5px;
+            }
+          }
+        }
+        .bottomBtn {
+          .send {
+            position: relative;
+            left: 958px;
+            bottom: 24px;
+            width: 136px;
+            height: 48px;
+            border: 0;
+            background: #d7d7d7;
+            border-radius: 4px;
+            font-family: PingFangSC-Regular;
+            font-size: 18px;
+            color: #ffffff;
+            text-align: center;
+            line-height: 24px;
+            font-weight: 400;
           }
         }
       }
-      .bottomBtn {
-        .send {
-          position: relative;
-          left: 958px;
-          bottom: 24px;
-          width: 136px;
-          height: 48px;
-          border: 0;
-          background: #d7d7d7;
-          border-radius: 4px;
-          font-family: PingFangSC-Regular;
-          font-size: 18px;
-          color: #FFFFFF;
-          text-align: center;
-          line-height: 24px;
-          font-weight: 400;
-        }
-      }
     }
-  }
   }
   .aside {
     position: relative;
@@ -676,7 +716,7 @@ export default {
           text-decoration: none;
           outline: 0;
           cursor: pointer;
-          transition: color .2s ease;
+          transition: color 0.2s ease;
           .aside_item_content {
             display: flex;
             justify-content: center;
@@ -760,7 +800,8 @@ export default {
           line-height: 18px;
           margin: 15px auto 15px;
           cursor: pointer;
-          font-family: Microsoft Yahei,Open Sans,Helvetica,Tahoma,Arial,Hiragino Sans GB,WenQuanYi Micro Hei,sans-serif;
+          font-family: Microsoft Yahei, Open Sans, Helvetica, Tahoma, Arial,
+            Hiragino Sans GB, WenQuanYi Micro Hei, sans-serif;
           &:hover {
             text-decoration: underline;
           }

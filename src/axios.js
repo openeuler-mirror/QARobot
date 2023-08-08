@@ -7,7 +7,7 @@ const request = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-});
+})
 
 export default {
   post(url, data) {
@@ -18,12 +18,12 @@ export default {
         data,
       })
         .then((res) => {
-          resolve(res.data);
+          resolve(res.data)
         })
         .catch((err) => {
-          reject(err);
-        });
-    });
+          reject(err)
+        })
+    })
   },
 
   get(url, data) {
@@ -34,12 +34,12 @@ export default {
         params: data,
       })
         .then((res) => {
-          resolve(res.data);
+          resolve(res.data)
         })
         .catch((err) => {
-          reject(err);
-        });
-    });
+          reject(err)
+        })
+    })
   },
-  request
+  request,
 }

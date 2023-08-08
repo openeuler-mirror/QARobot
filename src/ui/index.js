@@ -1,7 +1,7 @@
-import Vue from 'vue';
-import Vant from 'vant';
-import 'vant/lib/index.css';
-import {Lazyload} from 'vant';
+import * as Vue from 'vue'
+import Vant from 'vant'
+import 'vant/lib/index.css'
+import { Lazyload } from 'vant'
 
-Vue.use(Vant);
-Vue.use(Lazyload);
+window.$vueApp.use(Vant)
+window.$vueApp.use(Lazyload)

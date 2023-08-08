@@ -2,9 +2,20 @@
   <footer class="footer">
     <AppContent :pc-top="0" :mobile-top="0">
       <div class="atom">
-        <p class="atom-text">openEuler 是由开放原子开源基金会（OpenAtom Foundation）孵化及运营的开源项目</p>
-        <a href="https://openatom.cn/home" target="_blank" rel="noopener noreferrer">
-          <img src="@/assets/common/footer/atom-logo.png" class="atom-logo" alt="openEuler" />
+        <p class="atom-text">
+          openEuler 是由开放原子开源基金会（OpenAtom
+          Foundation）孵化及运营的开源项目
+        </p>
+        <a
+          href="https://openatom.cn/home"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            src="@/assets/common/footer/atom-logo.png"
+            class="atom-logo"
+            alt="openEuler"
+          />
         </a>
       </div>
     </AppContent>
@@ -12,12 +23,18 @@
       <AppContent :pc-top="0" :mobile-top="0">
         <div class="inner">
           <div class="footer-logo">
-            <img class="show-pc" src="@/assets/common/footer/footer-logo2.png" alt="openEuler" />
-            <img class="show-mo" src="@/assets/common/footer/footer-logo1.png" alt="openEuler" />
+            <img
+              class="show-pc"
+              src="@/assets/common/footer/footer-logo2.png"
+              alt="openEuler"
+            />
+            <img
+              class="show-mo"
+              src="@/assets/common/footer/footer-logo1.png"
+              alt="openEuler"
+            />
             <p>
-              <a class="email" @click="goEmail()">
-                contact@openeuler.io
-              </a>
+              <a class="email" @click="goEmail()"> contact@openeuler.io </a>
             </p>
           </div>
           <div class="footer-option">
@@ -71,26 +88,26 @@
 </template>
 
 <script>
-import AppContent from '@/components/AppContent.vue';
-import FooterBg from '@/assets/common/footer/footer-bg.png';
-import FooterBgMo from '@/assets/common/footer/footer-bg-mo.png';
+import AppContent from '@/components/AppContent.vue'
+import FooterBg from '@/assets/common/footer/footer-bg.png'
+import FooterBgMo from '@/assets/common/footer/footer-bg-mo.png'
 
 // 中文友情链接
-import LogoBilibili from '@/assets/common/footer/bilibili.png';
-import LogoInfoq from '@/assets/common/footer/infoq.png';
-import LogoJuejin from '@/assets/common/footer/juejin.png';
-import LogoOschina from '@/assets/common/footer/oschina.png';
-import LogoCsdn from '@/assets/common/footer/csdn.png';
-import Logo51cto from '@/assets/common/footer/51cto.png';
+import LogoBilibili from '@/assets/common/footer/bilibili.png'
+import LogoInfoq from '@/assets/common/footer/infoq.png'
+import LogoJuejin from '@/assets/common/footer/juejin.png'
+import LogoOschina from '@/assets/common/footer/oschina.png'
+import LogoCsdn from '@/assets/common/footer/csdn.png'
+import Logo51cto from '@/assets/common/footer/51cto.png'
 
 // 公众号、小助手
-import CodeTitleXzs from '@/assets/common/footer/img-xzs.png';
-import CodeTitleGzh from '@/assets/common/footer/img-gzh.png';
-import CodeImgXzs from '@/assets/common/footer/code-xzs.png';
-import CodeImgZgz from '@/assets/common/footer/code-zgz.png';
+import CodeTitleXzs from '@/assets/common/footer/img-xzs.png'
+import CodeTitleGzh from '@/assets/common/footer/img-gzh.png'
+import CodeImgXzs from '@/assets/common/footer/code-xzs.png'
+import CodeImgZgz from '@/assets/common/footer/code-zgz.png'
 
 // float
-import floatLight from '@/assets/common/footer/float_light.png';
+import floatLight from '@/assets/common/footer/float_light.png'
 
 export default {
   name: 'appFooter',
@@ -98,7 +115,7 @@ export default {
   data: () => {
     return {
       lang: 'zh',
-      rightList : [
+      rightList: [
         {
           NAME: '品牌',
           URL: 'https://www.openeuler.org/zh/other/brand/',
@@ -116,7 +133,7 @@ export default {
           URL: 'https://status.openeuler.org/',
         },
       ],
-      linksData : [
+      linksData: [
         {
           path: 'https://my.oschina.net/openeuler',
           logo: LogoOschina,
@@ -148,7 +165,7 @@ export default {
           id: '51cto',
         },
       ],
-      footerCodeList : [
+      footerCodeList: [
         {
           img: CodeTitleXzs,
           code: CodeImgXzs,
@@ -160,33 +177,32 @@ export default {
           label: 'openEuler小助手',
         },
       ],
-      footBg : {
+      footBg: {
         pc: `url(${FooterBg})`,
         mo: `url(${FooterBgMo})`,
-      }
-    };
+      },
+    }
   },
   computed: {
     floatImg() {
-      return floatLight;
+      return floatLight
     },
   },
-  created() {
-  },
+  created() {},
   methods: {
     handleNavClick(path) {
       if (path.indexOf('status') !== -1) {
-        window.open(path, '_blank');
+        window.open(path, '_blank')
       } else {
         // window.location.replace(path);
-        window.location.href = path;
+        window.location.href = path
       }
     },
     goEmail() {
-      window.open('mailto:contact@openeuler.io');
-    }
+      window.open('mailto:contact@openeuler.io')
+    },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>

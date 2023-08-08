@@ -8,30 +8,27 @@ export default {
   props: {
     pcTop: {
       type: Number,
-      default: 64
+      default: 64,
     },
     mobileTop: {
       type: Number,
-      default: 40
-    }
+      default: 40,
+    },
   },
   data: () => {
-    return {
-    };
+    return {}
   },
   computed: {
     mobilePaddingTop() {
-      return this.mobileTop + 'px';
+      return this.mobileTop + 'px'
     },
     pcPaddingTop() {
-      return this.pcTop + 'px';
+      return this.pcTop + 'px'
     },
   },
-  created() {
-  },
-  methods: {
-  },
-};
+  created() {},
+  methods: {},
+}
 </script>
 
 <style lang="scss" scoped>
