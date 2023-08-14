@@ -20,7 +20,7 @@
     "tiny-emitter": "^2.1.0",
     "v-draggable": "0.0.3",
     "vant": "^4.6.3",
-    "vue": "^3.0.0",
+    "vue": "^3.2.26",
     "vue-highlightjs": "^1.3.3"
   },
   "devDependencies": {
