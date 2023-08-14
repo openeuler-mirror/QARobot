@@ -5,7 +5,7 @@ WORKDIR /home/openeuler/QARobot
 COPY . /home/openeuler/QARobot
 
 RUN npm config set registry https://registry.npm.taobao.org
-RUN npm install
+RUN npm install --legacy-peer-deps
 RUN npm run build
 
 FROM nginx:1.21.5
