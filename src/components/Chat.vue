@@ -628,7 +628,6 @@ export default {
       }
       .input-send {
         .input {
-          left: 14px;
           height: 172px;
           .van-field__control {
             min-height: 112px !important;
