@@ -31,9 +31,20 @@ export const hootList = [
     src: 'https://docs.openeuler.org/zh/docs/20.03_LTS_SP1/docs/thirdparty_migration/x2openEuler-Userguide.html',
   },
   { title: '开发者论坛', src: 'https://forum.openeuler.org/' },
+  {
+    title: 'openEuler邮件列表',
+    src: 'https://www.openeuler.org/zh/community/mailing-list/',
+  },
+  {
+    title: 'openEuler安全公告',
+    src: 'https://www.openeuler.org/zh/security/security-bulletins/',
+  }
 ]
 
 export const domainIds = [
+  '1b200dcb-1b9f-4ed2-a3de-e8adbdf4ca85',
+  'ebb7bec7-3c2a-4af1-8bc7-81d3d2ffaf3f',
+  'b342cfd5-876d-495d-867d-b7728bbbf845',
   'ee878276-a0f8-4e09-a21d-3189c02f8194',
   '7b782452-57c0-4647-a069-d8ffa478c110',
   '89f1e0b1-327f-4a3d-bfe4-aeb869f51bb4',

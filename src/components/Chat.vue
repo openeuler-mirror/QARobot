@@ -38,10 +38,11 @@
         <ul id="list" class="poplist">
           <li
             class="popitem"
-            v-for="(item, index) in msgData"
-            :key="index"
+            v-for="(item, i) in msgData"
+            :key="i"
+            :class="[currentIndex === i ? 'active' : '']"
             v-html="item"
-            @click="popClick(item)"
+            @click="popClick(item, i)"
           ></li>
         </ul>
         <div class="input-send">
@@ -168,6 +169,7 @@ export default {
   components: { LeftItem, RightItem },
   data: () => {
     return {
+      currentIndex: -1,
       records: [],
       question: '',
       header: '',
@@ -294,7 +296,34 @@ export default {
       }
       if (event.keyCode === 13) {
         event.preventDefault() // 阻止浏览器默认换行操作
+        if (this.currentIndex !== -1) {
+          this.text = this.msgData[this.currentIndex]
+        }
         this.send()
+      }
+      if (event.keyCode === 40) {
+        if (this.msgData.length !== 0) {
+          if (this.currentIndex === this.msgData.length - 1) {
+            this.currentIndex = 0
+          } else {
+            this.currentIndex++
+          }
+          this.text = this.msgData[this.currentIndex]
+        } else {
+          return
+        }
+      }
+      if (event.keyCode === 38) {
+        if (this.msgData.length !== 0) {
+          if (this.currentIndex === -1 || this.currentIndex === 0) {
+            this.currentIndex = this.msgData.length - 1
+          } else {
+            this.currentIndex--
+          }
+          this.text = this.msgData[this.currentIndex]
+        } else {
+          return
+        }
       }
     },
     chatover() {
@@ -337,6 +366,7 @@ export default {
         this.getChat(params, type)
         this.question = this.text
         this.text = ''
+        this.currentIndex = -1 // 重置currentIndex
       }
     },
     getChat(params, type) {
@@ -451,15 +481,12 @@ export default {
         }
       })
     },
-    popClick(msg) {
-      msg = msg
-        .replaceAll("<span style='color:#0C7DD4'>", '')
-        .replaceAll('</span>', '')
+    popClick(msg, i) {
+      this.currentIndex = i
       this.text = msg
       this.send()
-      this.msgData = []
     },
-    searchData() {
+    searchData(event) {
       this.msgData = []
       if (this.text) {
         const params = {
@@ -474,10 +501,6 @@ export default {
           if (res.questions) {
             res.questions.forEach((item) => {
               if (this.text) {
-                item = item.replaceAll(
-                  this.text,
-                  `<span style='color:#0C7DD4'>${this.text}</span>`
-                )
                 this.msgData.push(item)
               }
             })
@@ -531,16 +554,16 @@ export default {
 .appclass {
   display: flex;
   .maincontainer {
-    width: 1135px;
-    height: 995px;
+    width: 1420px;
+    height: 830px;
     background: #ffffff;
     box-shadow: 0px 0px 14px rgba(51, 51, 51, 0.16);
     opacity: 1;
     border-radius: 0px;
-    margin: 88px auto 24px;
+    margin: 50px auto 24px;
     margin-right: 20px;
     .appheader {
-      width: 1135px;
+      width: 1420px;
       height: 80px;
       background: #e5e8f0;
       opacity: 1;
@@ -604,7 +627,6 @@ export default {
     }
     ::v-deep .bottom {
       position: relative;
-      height: 173px;
       border-top: 1px solid #b7b7b7;
       .poplist {
         border: 1px solid #c1c1c1;
@@ -621,6 +643,9 @@ export default {
         .popitem {
           padding: 5px 40px;
           cursor: pointer;
+          &.active {
+            background: #e5e8f0;
+          }
         }
         .popitem:hover {
           background: #e5e8f0;
@@ -628,9 +653,8 @@ export default {
       }
       .input-send {
         .input {
-          height: 172px;
           .van-field__control {
-            min-height: 112px !important;
+            min-height: 88px !important;
             &:hover {
               overflow-y: auto;
             }
@@ -659,8 +683,7 @@ export default {
         .bottomBtn {
           .send {
             position: relative;
-            left: 958px;
-            bottom: 24px;
+            left: 1260px;
             width: 136px;
             height: 48px;
             border: 0;
@@ -680,12 +703,12 @@ export default {
   .aside {
     position: relative;
     width: 300px;
-    height: 995px;
+    height: 830px;
     background: #ffffff;
     box-shadow: 0px 0px 14px rgba(51, 51, 51, 0.16);
     opacity: 1;
     border-radius: 0px;
-    margin: 88px auto 24px;
+    margin: 50px auto 24px;
     margin-left: 20px;
     .aside_header {
       width: 80px;
