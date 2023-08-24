@@ -543,7 +543,7 @@ export default {
         color: #000000;
         line-height: 24px;
         margin-bottom: 10px;
-        font-weight: 400;
+        font-weight: 600;
       }
       .answer_content {
         font-family: PingFangSC-Regular;
