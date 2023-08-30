@@ -12,7 +12,7 @@
           rel="noopener noreferrer"
         >
           <img
-            src="@/assets/common/footer/atom-logo.png"
+            src="@/assets/common/footer/atom-new-logo.svg"
             class="atom-logo"
             alt="openEuler"
           />
