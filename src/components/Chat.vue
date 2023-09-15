@@ -21,7 +21,6 @@
                 :content="item.content"
                 :moreDoc="item.moreDoc"
                 :moreIssue="item.moreIssue"
-                :docText="item.docText"
                 :requestId="item.requestId"
                 @badreq="badreq"
                 @getMsg="getMsg"
@@ -56,7 +55,7 @@
             @keydown="listen($event)"
           />
           <div class="bottomBtn">
-            <el-button class="send" @click="send" :disabled="isDisabled"
+            <el-button class="send" :class="[!isDisabled ? 'active' : '']" @click="send" :disabled="isDisabled"
               >发送</el-button
             >
           </div>
@@ -137,10 +136,14 @@
       <el-input
         type="textarea"
         :rows="7"
-        placeholder="请具体描述您的意见，小智会不断学习的"
+        placeholder="请具体描述您的意见，小智会不断学习的，你也可以点击右侧的邮件列表链接，找到对应sig组反馈问题。"
         v-model="textarea"
       >
       </el-input>
+      <div style="display: flex;align-items: center;margin-top: 20px;">
+        <span style="width: 100px;font-size: 15px;">联系邮箱: </span>
+        <el-input v-model="email" placeholder="请输入邮箱地址"></el-input>
+      </div>
       <template v-slot:footer>
         <span class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
@@ -169,6 +172,7 @@ export default {
   components: { LeftItem, RightItem },
   data: () => {
     return {
+      email: '',
       currentIndex: -1,
       records: [],
       question: '',
@@ -181,7 +185,6 @@ export default {
       msglist: [],
       moreDoc: [],
       moreIssue: [],
-      docText: {},
       rate: 0,
       hootList: hootList,
       asideOrders: asideOrders,
@@ -273,7 +276,7 @@ export default {
       const datas = {
         session_id: this.sessionId,
         feedback: this.rate,
-        comment: this.textarea,
+        comment: this.textarea + '【邮箱: ' + this.email + '】',
       }
       userFeedback(datas).then((res) => {
         if (res.feedback_id) {
@@ -283,6 +286,7 @@ export default {
       })
     },
     dialogClose() {
+      this.email = ''
       this.textarea = ''
       this.rate = 0
     },
@@ -327,7 +331,7 @@ export default {
       }
     },
     chatover() {
-      if (this.msgType === 4) {
+      if (this.msgType === 4 || this.msgType === 2) {
         return
       } else {
         this.itempush()
@@ -361,6 +365,7 @@ export default {
           extend: {
             domain_ids: this.domainIds,
           },
+          query_types: [0], // 暂时只用到知识库问答
           question: this.text,
         }
         this.getChat(params, type)
@@ -382,9 +387,6 @@ export default {
           })
         } else {
           this.moreDoc = []
-        }
-        if (!this.docText) {
-          this.docText = {}
         }
       })
       getMoreIssues(params.question).then((res) => {
@@ -408,9 +410,6 @@ export default {
           })
         } else {
           this.moreIssue = []
-        }
-        if (!this.docText) {
-          this.docText = {}
         }
       })
       getQabotChat(params).then((res) => {
@@ -436,47 +435,20 @@ export default {
           } else if (res.reply_type == 2) {
             this.msgType = 2
             this.msg = res.chat_answers.answer
-          } else if (res.reply_type != 0 && res.reply_type != 2) {
-            if (Object.keys(this.docText).length == 0) {
-              this.msgType = 1
-              this.msg = '小智对openEuler比较了解~可以尝试问问我相关问题哦'
-            } else {
-              this.msgType = 3
-              this.docTextType = 1
-            }
           }
           // 小智得数据状态
-          if (
-            this.msgType === 0 ||
-            this.msgType === 1 ||
-            this.msgType === 2 ||
-            this.msgType === 4
-          ) {
+          if (this.msgType === 0 || this.msgType === 4) {
             this.itempush()
-          } else if (this.msgType === 3) {
-            if (this.docTextType == 1) {
-              this.msglist.push({
-                header: this.header,
-                type: 3,
-                content: '',
-                moreDoc: this.moreDoc,
-                moreIssue: this.moreIssue,
-                docText: this.docText,
-                me: false,
-                requestId: this.requestId,
-              })
-            } else {
-              this.msglist.push({
-                header: this.header,
-                type: this.msgType,
-                content: this.msg,
-                moreDoc: this.moreDoc,
-                moreIssue: this.moreIssue,
-                docText: this.docText,
-                me: false,
-                requestId: this.requestId,
-              })
-            }
+          } else {
+            this.msglist.push({
+              header: this.header,
+              type: 6,
+              content: '',
+              moreDoc: this.moreDoc,
+              moreIssue: this.moreIssue,
+              me: false,
+              requestId: this.requestId,
+            })
           }
         }
       })
@@ -515,7 +487,6 @@ export default {
         content: this.msg,
         moreDoc: this.moreDoc,
         moreIssue: this.moreIssue,
-        docText: this.docText,
         me: false,
         requestId: this.requestId,
       })
@@ -695,6 +666,9 @@ export default {
             text-align: center;
             line-height: 24px;
             font-weight: 400;
+            &.active {
+              background: #002fa7;
+            }
           }
         }
       }

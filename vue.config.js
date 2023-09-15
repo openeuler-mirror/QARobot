@@ -1,6 +1,13 @@
 module.exports = {
     devServer: {
         proxy: {
+            '/hcstream': {
+                target: 'https://modelapi.osinfra.cn',
+                changeOrigin: true,
+                pathRewrite: {
+                    '^/api': '/'
+                }
+            },
             '/issues': {
                 target: 'https://ipb.osinfra.cn',
                 changeOrigin: true,

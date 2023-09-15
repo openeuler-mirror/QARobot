@@ -6,7 +6,7 @@ import 'element-plus/dist/index.css'
 import 'element-plus/theme-chalk/index.css'
 import Vant from 'vant'
 import '../node_modules/vant/lib/index.css'
-import 'highlight.js/styles/stackoverflow-light.css'
+import 'highlight.js/styles/atom-one-dark.css' // 黑色主题，会好看一点
 
 window.$vueApp = Vue.createApp(App)
 window.$vueApp.use(Vant)
