@@ -254,6 +254,10 @@
           ></el-icon>
           <span>已提交</span>
         </div>
+        <div class="aitext" v-if="type === 6" v-loading="aitext === ''">
+          <div v-highlight v-if="aitext !== ''" v-html="aitext"></div>
+          <div v-else style="height: 35px;width: 25px;"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -261,7 +265,7 @@
 
 <script>
 import { $emit } from '../utils/gogocodeTransfer'
-import { satisfaction } from '@/api/post'
+import { satisfaction, getAianswer } from '@/api/post'
 import MarkdownIt from 'markdown-it'
 
 export default {
@@ -275,8 +279,7 @@ export default {
     'moreDoc',
     'moreIssue',
     'question',
-    'requestId',
-    'docText',
+    'requestId'
   ],
   data: () => {
     return {
@@ -304,9 +307,6 @@ export default {
   created() {
     this.initData()
     this.Time()
-    if (this.type == 4) {
-      this.aitext = this.content
-    }
   },
   mounted() {
     this.md = new MarkdownIt({
@@ -354,8 +354,30 @@ export default {
         this.tableData = this.content[0]
       }
       // 匹配智能机器人回答
-      if (this.type === 4) {
+      if (this.type === 6) {
+        this.getAi()
       }
+    },
+    getAi() {
+      console.log('执行模型语句')
+      getAianswer(this.question, {
+        message: (res) => {
+          console.log(res)
+          console.log(JSON.parse(res).answer)
+          this.$emit('divMove') // 每刷新一次数据就向父组件发送信息动态查询
+          if (JSON.parse(res).answer) {
+            this.mdText += JSON.parse(res).answer
+          }
+          // 去除双引号
+          this.aitext = this.md.render(this.mdText)
+          console.log(this.aitext)
+        },
+        close: () => {
+          console.log('输出结束')
+          // 监听chatapi接口数据是否输出完毕
+          this.$emit('chatover')
+        }
+      })
     },
     getMsg(msg) {
       $emit(this, 'getMsg', msg)

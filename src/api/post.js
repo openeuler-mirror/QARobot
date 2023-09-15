@@ -43,47 +43,50 @@ export function getMoreIssues(inputText) {
 }
 
 // 请求chatapi
-export function getChatapi(inputText, params) {
+export function getAianswer (inputText, params) {
   const { message, close } = params
   const headers = {
-    Authorization: 'Bearer' + ' ' + localStorage.getItem('Access-Token'),
-  }
-  const body = JSON.stringify([
+    'Content-Type': 'application/json',
+  };
+  const body = JSON.stringify(
     {
-      role: 'user',
-      Content: inputText,
-    },
-  ])
+      question: inputText,
+      history: [],
+    }
+  );
   // eslint-disable-next-line no-unused-vars
-  const es = new fetchEventSource('/chatCompletionStream', {
+  const es = new fetchEventSource('/hcstream', {
     method: 'POST',
     headers,
     body,
-    async onopen(response) {
+    async onopen (response) {
       if (response.ok) {
-        return // everything's good
-      } else if (
-        response.status >= 400 &&
-        response.status < 500 &&
-        response.status !== 429
-      ) {
+        return; // everything's good
+      } else if (response.status >= 400 && response.status < 500 && response.status !== 429) {
         // throw new Error(response.statusText);
       } else {
-        throw new Error()
+        throw new Error();
       }
     },
-    onmessage(event) {
-      message(event.data)
+    onmessage (event) {
+      message(event.data);
     },
-    onclose() {
+    onclose () {
       close()
       // if the server closes the connection unexpectedly, retry:
     },
-    onerror(err) {
-      throw new Error()
-    },
-  })
+    onerror (err) {
+      throw new Error();
+    }
+  });
 }
+
+// export function getAianswer(inputText) {
+//   return postRequest('/hcstream', {
+//     question: inputText,
+//     history: [],
+//   })
+// }
 
 export function getAnswer(inputText) {
   return postRequest('/api', {
