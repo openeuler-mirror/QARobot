@@ -256,7 +256,7 @@
         </div>
         <div class="aitext" v-if="type === 6" v-loading="aitext === ''">
           <div v-highlight v-if="aitext !== ''" v-html="aitext"></div>
-          <div v-else style="height: 35px;width: 25px;"></div>
+          <div v-else style="height: 35px; width: 25px"></div>
         </div>
       </div>
     </div>
@@ -269,8 +269,7 @@ import { satisfaction, getAianswer } from '@/api/post'
 import MarkdownIt from 'markdown-it'
 
 export default {
-  components: {
-  },
+  components: {},
   name: 'LeftItem',
   props: [
     'type',
@@ -279,7 +278,7 @@ export default {
     'moreDoc',
     'moreIssue',
     'question',
-    'requestId'
+    'requestId',
   ],
   data: () => {
     return {
@@ -335,7 +334,7 @@ export default {
         comment: this.badsuggest,
         request_id: requestId,
       }
-      satisfaction(params).then((res) => {
+      satisfaction(params).then(res => {
         this.$message('反馈成功!')
         this.isSubmit = true
       })
@@ -353,15 +352,17 @@ export default {
         this.welcomeNote = this.content[1]
         this.tableData = this.content[0]
       }
+      // 都没有匹配则当前 问答库内找不到合适的回答，回复默认消息
       // 匹配智能机器人回答
       if (this.type === 6) {
-        this.getAi()
+        // this.getAi()
+        this.aitext = '抱歉，小智还在学习中，换个问法试试吧'
       }
     },
     getAi() {
       console.log('执行模型语句')
       getAianswer(this.question, {
-        message: (res) => {
+        message: res => {
           console.log(res)
           console.log(JSON.parse(res).answer)
           this.$emit('divMove') // 每刷新一次数据就向父组件发送信息动态查询
@@ -376,7 +377,7 @@ export default {
           console.log('输出结束')
           // 监听chatapi接口数据是否输出完毕
           this.$emit('chatover')
-        }
+        },
       })
     },
     getMsg(msg) {
@@ -390,7 +391,7 @@ export default {
         degree: type, // 1表示满意，-1表示不满意
         request_id: requestId,
       }
-      satisfaction(params).then((res) => {
+      satisfaction(params).then(res => {
         this.iscommented = true
         this.islike = type
         if (type === 1) {

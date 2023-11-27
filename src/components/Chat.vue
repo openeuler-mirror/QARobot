@@ -55,7 +55,11 @@
             @keydown="listen($event)"
           />
           <div class="bottomBtn">
-            <el-button class="send" :class="[!isDisabled ? 'active' : '']" @click="send" :disabled="isDisabled"
+            <el-button
+              class="send"
+              :class="[!isDisabled ? 'active' : '']"
+              @click="send"
+              :disabled="isDisabled"
               >发送</el-button
             >
           </div>
@@ -131,8 +135,7 @@
       @close="dialogClose"
     >
       <div style="font-size: 16px; margin-bottom: 15px">你给小智打几分？</div>
-      <el-rate v-model="rate" show-text style="margin-bottom: 15px">
-      </el-rate>
+      <el-rate v-model="rate" show-text style="margin-bottom: 15px"> </el-rate>
       <el-input
         type="textarea"
         :rows="7"
@@ -140,8 +143,8 @@
         v-model="textarea"
       >
       </el-input>
-      <div style="display: flex;align-items: center;margin-top: 20px;">
-        <span style="width: 100px;font-size: 15px;">联系邮箱: </span>
+      <div style="display: flex; align-items: center; margin-top: 20px">
+        <span style="width: 100px; font-size: 15px">联系邮箱: </span>
         <el-input v-model="email" placeholder="请输入邮箱地址"></el-input>
       </div>
       <template v-slot:footer>
@@ -166,6 +169,8 @@ import {
 } from '@/api/post'
 import LeftItem from '@/components/LeftItem'
 import RightItem from '@/components/RightItem'
+
+import { debounce } from '@/utils/debounce'
 
 export default {
   name: 'Chat',
@@ -222,6 +227,8 @@ export default {
     this.initData('')
     // 从本地存储中读取搜索记录
     this.records = JSON.parse(localStorage.getItem('records')) || []
+
+    this.searchData = debounce(this.searchData, 500)
   },
   methods: {
     getTool(data) {
@@ -278,7 +285,7 @@ export default {
         feedback: this.rate,
         comment: this.textarea + '【邮箱: ' + this.email + '】',
       }
-      userFeedback(datas).then((res) => {
+      userFeedback(datas).then(res => {
         if (res.feedback_id) {
           this.$message.info('反馈成功!')
           this.dialogVisible = false
@@ -375,10 +382,10 @@ export default {
       }
     },
     getChat(params, type) {
-      getMoreDoc(params.question).then((res) => {
+      getMoreDoc(params.question).then(res => {
         if (res.status === 200 && res.obj) {
           this.moreDoc = []
-          res.obj.records.forEach((item) => {
+          res.obj.records.forEach(item => {
             item.title = item.title.replaceAll(
               '<span>',
               '<span style="color:#AD0D00">'
@@ -389,11 +396,11 @@ export default {
           this.moreDoc = []
         }
       })
-      getMoreIssues(params.question).then((res) => {
+      getMoreIssues(params.question).then(res => {
         console.log(res)
         if (res.data) {
           this.moreIssue = []
-          res.data.forEach((item) => {
+          res.data.forEach(item => {
             const colorStyle = '<span style="color:#AD0D00">'
             if (item.title.indexOf(params.question) !== -1) {
               const startPos = item.title.indexOf(params.question)
@@ -412,7 +419,7 @@ export default {
           this.moreIssue = []
         }
       })
-      getQabotChat(params).then((res) => {
+      getQabotChat(params).then(res => {
         if (res) {
           this.requestId = res.request_id
           this.sessionId = res.session_id
@@ -458,7 +465,7 @@ export default {
       this.text = msg
       this.send()
     },
-    searchData(event) {
+    searchData() {
       this.msgData = []
       if (this.text) {
         const params = {
@@ -468,10 +475,10 @@ export default {
             domain_ids: this.domainIds,
           },
         }
-        getChatSuggestions(params).then((res) => {
+        getChatSuggestions(params).then(res => {
           this.msgData = []
           if (res.questions) {
-            res.questions.forEach((item) => {
+            res.questions.forEach(item => {
               if (this.text) {
                 this.msgData.push(item)
               }
@@ -596,7 +603,7 @@ export default {
         width: 100%;
       }
     }
-    ::v-deep .bottom {
+    :deep(.bottom) {
       position: relative;
       border-top: 1px solid #b7b7b7;
       .poplist {
