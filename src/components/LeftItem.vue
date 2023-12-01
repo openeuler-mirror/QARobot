@@ -108,67 +108,13 @@
           <div v-if="moreDoc.length > 5">
             <div class="titledivider"></div>
             <div @click="showDoc = showDoc ? false : true" class="bottomTitle">
-              <span class="showMore">{{ showDoc ? '收起' : '查看更多' }}</span>
+              <span class="showMore">{{ showDoc ? "收起" : "查看更多" }}</span>
               <i
                 :class="showDoc ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"
               ></i>
             </div>
           </div>
         </div>
-        <!--  <div
-          class="text"
-          v-if="
-            (moreIssue.length != 0 && type === 1) ||
-            (moreIssue.length != 0 && type === 3)
-          "
-        >
-          <div class="titledivider"></div>
-          <div class="welcome_question">更多相关Issue:</div>
-          <div
-            class="listBefore"
-            v-for="(item, index) in moreIssue.slice(0, 2)"
-            :key="item.id"
-          >
-            <div class="docList">
-              <div class="docTitle">
-                {{ index + 1 }}.<span
-                  v-html="item.title"
-                  @click="jumpIssue(item.link)"
-                ></span>
-              </div>
-            </div>
-          </div>
-          <div
-            class="listEnd"
-            v-for="(item, index) in moreIssue.slice(2)"
-            :key="item.id"
-          >
-            <div v-if="showIssue">
-              <div class="docList">
-                <div class="docTitle">
-                  {{ index + 3 }}.<span
-                    v-html="item.title"
-                    @click="jumpIssue(item.link)"
-                  ></span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div v-if="moreIssue.length > 5">
-            <div class="titledivider"></div>
-            <div
-              @click="showIssue = showIssue ? false : true"
-              class="bottomTitle"
-            >
-              <span class="showMore">{{
-                showIssue ? '收起' : '查看更多'
-              }}</span>
-              <i
-                :class="showIssue ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"
-              ></i>
-            </div>
-          </div>
-        </div> -->
         <div class="zan-box" v-if="type != 0 && type != 5">
           <img
             class="zanitem"
@@ -256,7 +202,7 @@
         </div>
         <div class="aitext" v-if="type === 6" v-loading="aitext === ''">
           <div v-highlight v-if="aitext !== ''" v-html="aitext"></div>
-          <div v-else style="height: 35px;width: 25px;"></div>
+          <div v-else style="height: 35px; width: 25px"></div>
         </div>
       </div>
     </div>
@@ -264,166 +210,167 @@
 </template>
 
 <script>
-import { $emit } from '../utils/gogocodeTransfer'
-import { satisfaction, getAianswer } from '@/api/post'
-import MarkdownIt from 'markdown-it'
+import { $emit } from "../utils/gogocodeTransfer";
+import { satisfaction } from "@/api/post";
+import MarkdownIt from "markdown-it";
+import { getRagStreamAnswer } from "@/api/assets";
 
 export default {
-  components: {
-  },
-  name: 'LeftItem',
+  components: {},
+  name: "LeftItem",
   props: [
-    'type',
-    'content',
-    'header',
-    'moreDoc',
-    'moreIssue',
-    'question',
-    'requestId'
+    "type",
+    "content",
+    "header",
+    "moreDoc",
+    "moreIssue",
+    "question",
+    "requestId",
   ],
+  emits: ["divMove", "getMsg", "badreq"],
   data: () => {
     return {
-      md: '',
-      mdText: '',
+      md: "",
+      mdText: "",
       zanfeedVis: true, // 判断用户是否点赞完毕
       isSubmit: false, // 判断用户是否反馈完毕
       loading: true,
-      aitext: '',
-      date: '',
-      welcomeTitle: '',
-      welcomeNote: '',
+      aitext: "",
+      date: "",
+      welcomeTitle: "",
+      welcomeNote: "",
       showMsg: false,
       showDoc: false,
       showIssue: false,
       iscommented: false,
       islike: undefined,
       tableData: [],
-      badsuggest: '',
+      badsuggest: "",
       checked: null,
-      feedbackTag: '',
-    }
+      feedbackTag: "",
+    };
   },
-  watch: {},
   created() {
-    this.initData()
-    this.Time()
+    this.initData();
+    this.Time();
   },
   mounted() {
     this.md = new MarkdownIt({
       linkify: true,
-    })
+    });
   },
   methods: {
     submit(requestId) {
       switch (this.checked) {
         case 1:
-          this.feedbackTag = '答非所问'
-          break
+          this.feedbackTag = "答非所问";
+          break;
         case 2:
-          this.feedbackTag = '没有答案'
-          break
+          this.feedbackTag = "没有答案";
+          break;
         case 3:
-          this.feedbackTag = '操作后无效'
-          break
+          this.feedbackTag = "操作后无效";
+          break;
         case 4:
-          this.feedbackTag = '其他-请补充'
-          break
+          this.feedbackTag = "其他-请补充";
+          break;
       }
       const params = {
         degree: -1,
         feedback_tag: this.feedbackTag,
         comment: this.badsuggest,
         request_id: requestId,
-      }
+      };
       satisfaction(params).then((res) => {
-        this.$message('反馈成功!')
-        this.isSubmit = true
-      })
+        this.$message("反馈成功!");
+        this.isSubmit = true;
+      });
     },
     cancelsub() {
-      this.zanfeedVis = false
+      this.zanfeedVis = false;
     },
     initData() {
       if (this.type === 1) {
-        this.welcomeTitle = this.content[0]
-        this.tableData = this.content[0]
+        this.welcomeTitle = this.content[0];
+        this.tableData = this.content[0];
       }
       if (this.type === 0) {
-        this.welcomeTitle = this.content[0]
-        this.welcomeNote = this.content[1]
-        this.tableData = this.content[0]
+        this.welcomeTitle = this.content[0];
+        this.welcomeNote = this.content[1];
+        this.tableData = this.content[0];
       }
-      // 匹配智能机器人回答
       if (this.type === 6) {
-        this.getAi()
+        // 采用知识库来回答
+        this.getAnswerByRag();
       }
     },
-    getAi() {
-      console.log('执行模型语句')
-      getAianswer(this.question, {
-        message: (res) => {
-          console.log(res)
-          console.log(JSON.parse(res).answer)
-          this.$emit('divMove') // 每刷新一次数据就向父组件发送信息动态查询
-          if (JSON.parse(res).answer) {
-            this.mdText += JSON.parse(res).answer
-          }
-          // 去除双引号
-          this.aitext = this.md.render(this.mdText)
-          console.log(this.aitext)
-        },
-        close: () => {
-          console.log('输出结束')
-          // 监听chatapi接口数据是否输出完毕
-          this.$emit('chatover')
-        }
-      })
+
+    // 通过知识库获取回答
+    getAnswerByRag() {
+      const params = {
+        question: this.question,
+        kb_sn: "OpenEuler_1b14ac45",
+        // model: "baichuan2",
+        // messages: [
+        //   {
+        //     role: "user",
+        //     content: this.question,
+        //   },
+        // ],
+        // stream: true,
+        // n: 1,
+      };
+      getRagStreamAnswer(params, (res) => {
+        this.mdText += res.content;
+        this.aitext = this.md.render(this.mdText);
+        this.$emit("divMove");
+      });
     },
     getMsg(msg) {
-      $emit(this, 'getMsg', msg)
+      $emit(this, "getMsg", msg);
     },
     getCheck(value) {
-      this.checked = value
+      this.checked = value;
     },
+    // 评论
     comment(type, requestId) {
       const params = {
         degree: type, // 1表示满意，-1表示不满意
         request_id: requestId,
-      }
+      };
       satisfaction(params).then((res) => {
-        this.iscommented = true
-        this.islike = type
+        this.iscommented = true;
+        this.islike = type;
         if (type === 1) {
-          this.$message('反馈成功!')
+          this.$message("反馈成功!");
         } else {
-          $emit(this, 'badreq', requestId)
-          this.zanfeedVis = true
+          $emit(this, "badreq", requestId);
+          this.zanfeedVis = true;
         }
-      })
+      });
     },
     jump(path) {
-      if (path.charAt(path.length - 1) === '/') {
-        window.open('https://www.openeuler.org/' + path)
-      } else if (path.charAt(0) === '/') {
-        window.open('https://forum.openeuler.org' + path)
+      if (path.charAt(path.length - 1) === "/") {
+        window.open("https://www.openeuler.org/" + path);
+      } else if (path.charAt(0) === "/") {
+        window.open("https://forum.openeuler.org" + path);
       } else {
-        window.open('https://www.openeuler.org/' + path + '.html')
+        window.open("https://www.openeuler.org/" + path + ".html");
       }
     },
     jumpIssue(link) {
-      window.open(link)
+      window.open(link);
     },
     Time() {
-      let hour = new Date().getHours()
+      let hour = new Date().getHours();
       let minute =
         new Date().getMinutes() < 10
-          ? '0' + new Date().getMinutes()
-          : new Date().getMinutes()
-      this.date = `${hour}:${minute}`
+          ? "0" + new Date().getMinutes()
+          : new Date().getMinutes();
+      this.date = `${hour}:${minute}`;
     },
   },
-  emits: ['getMsg', 'badreq'],
-}
+};
 </script>
 
 <style scoped>
@@ -534,7 +481,7 @@ export default {
       }
     }
     .welcomeMsg::before {
-      content: '';
+      content: "";
       position: absolute;
       top: 16px;
       left: -7px;
@@ -643,7 +590,7 @@ export default {
       }
     }
     .text::before {
-      content: '';
+      content: "";
       position: absolute;
       top: 16px;
       left: -7px;
