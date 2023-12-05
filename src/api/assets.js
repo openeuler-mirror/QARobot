@@ -4,7 +4,7 @@ import { fetchEventSource } from "@microsoft/fetch-event-source";
 export function getBaichuanStreamAnswer(params, successCallback) {
   const abortController = new AbortController();
   const signal = abortController.signal;
-  fetchEventSource("http://60.204.250.91:8000/v1/chat/completions", {
+  fetchEventSource("https://60.204.250.91:8000/v1/chat/completions", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -32,7 +32,7 @@ export function getBaichuanStreamAnswer(params, successCallback) {
 export function getGptStreamAnswer(params, successCallback) {
   const abortController = new AbortController();
   const signal = abortController.signal;
-  fetchEventSource("http://159.138.5.80:5610/v1/chat/completions", {
+  fetchEventSource("https://159.138.5.80:5610/v1/chat/completions", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -61,7 +61,7 @@ export function getGptStreamAnswer(params, successCallback) {
 export function getRagStreamAnswer(params, successCallback) {
   const abortController = new AbortController();
   const signal = abortController.signal;
-  fetchEventSource("http://60.204.250.91:8002/kb/get_stream_answer", {
+  fetchEventSource("https://rag.test.osinfra.cn/kb/get_stream_answer", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
