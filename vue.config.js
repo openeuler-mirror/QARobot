@@ -1,5 +1,8 @@
 module.exports = {
   devServer: {
+    host: "0.0.0.0",
+    https: false,
+    port: 8080,
     proxy: {
       "/rag": {
         target: "http://60.204.250.91:8002",

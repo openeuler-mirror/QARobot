@@ -543,17 +543,15 @@ export default {
 <style lang="scss" scoped>
 .appclass {
   display: flex;
+  padding: 50px 50px 20px 50px;
   .maincontainer {
-    width: 1420px;
-    height: 830px;
+    width: calc(100% - 300px);
+    height: 870px;
     background: #ffffff;
     box-shadow: 0px 0px 14px rgba(51, 51, 51, 0.16);
     opacity: 1;
-    border-radius: 0px;
-    margin: 50px auto 24px;
-    margin-right: 20px;
+    margin-right: 40px;
     .appheader {
-      width: 1420px;
       height: 80px;
       background: #e5e8f0;
       opacity: 1;
@@ -671,9 +669,9 @@ export default {
           }
         }
         .bottomBtn {
+          display: flex;
+          justify-content: flex-end;
           .send {
-            position: relative;
-            left: 1260px;
             width: 136px;
             height: 48px;
             border: 0;
@@ -685,6 +683,7 @@ export default {
             text-align: center;
             line-height: 24px;
             font-weight: 400;
+            margin-right: 20px;
             &.active {
               background: #002fa7;
             }
@@ -694,15 +693,10 @@ export default {
     }
   }
   .aside {
-    position: relative;
     width: 300px;
-    height: 830px;
+    height: 870px;
     background: #ffffff;
     box-shadow: 0px 0px 14px rgba(51, 51, 51, 0.16);
-    opacity: 1;
-    border-radius: 0px;
-    margin: 50px auto 24px;
-    margin-left: 20px;
     .aside_header {
       width: 80px;
       font-weight: 600;
@@ -723,18 +717,15 @@ export default {
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        margin-top: 16px;
-        margin-bottom: 16px;
+        margin: 16px 0;
         a {
-          background: 0 0;
-          text-decoration: none;
           outline: 0;
           cursor: pointer;
           transition: color 0.2s ease;
           .aside_item_content {
             display: flex;
             justify-content: center;
-            margin-bottom: 15px;
+            margin-bottom: 5px;
             img {
               width: 30px;
               height: 30px;
@@ -792,8 +783,6 @@ export default {
     }
     .aside_search {
       margin: 24px 25px 16px 30px;
-      position: absolute;
-      bottom: 0; /* 将页脚div定位在父级div底部 */
       height: 135px; /* 页脚div高度 */
       .footer_title {
         font-weight: 600;
