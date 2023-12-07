@@ -309,22 +309,20 @@ export default {
     getAnswerByRag() {
       const params = {
         question: this.question,
-        kb_sn: "OpenEuler_1b14ac45",
-        // model: "baichuan2",
-        // messages: [
-        //   {
-        //     role: "user",
-        //     content: this.question,
-        //   },
-        // ],
-        // stream: true,
-        // n: 1,
+        kb_sn: "openEuler_5f09ebb1",
       };
-      getRagStreamAnswer(params, (res) => {
-        this.mdText += res.content;
-        this.aitext = this.md.render(this.mdText);
-        this.$emit("divMove");
-      });
+      getRagStreamAnswer(
+        params,
+        (res) => {
+          this.mdText += res.content;
+          this.aitext = this.md.render(this.mdText);
+          this.$emit("divMove");
+        },
+        () => {
+          this.aitext = this.md.render("Network error");
+          this.$emit("divMove");
+        }
+      );
     },
     getMsg(msg) {
       $emit(this, "getMsg", msg);
