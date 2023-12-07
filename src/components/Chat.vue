@@ -428,46 +428,49 @@ export default {
           this.moreIssue = [];
         }
       });
-      getQabotChat(params).then((res) => {
-        if (res) {
-          this.requestId = res.request_id;
-          this.sessionId = res.session_id;
-          this.header = "";
-          if (res.reply_type == 0 && res.qabot_answers.answers.length > 0) {
-            if (type == "2") {
-              this.msgType = 2;
-            } else {
-              this.msgType = 4; // 小智查找到问题相关信息所返回的数据类型
-            }
-            this.header = res.qabot_answers.answers[0].st_question;
-            this.msg = res.qabot_answers.answers[0].answer;
-          } else if (
-            res.reply_type == 0 &&
-            res.qabot_answers.recommend_answers.length > 0
-          ) {
-            this.msgType = 3; // 小智推荐的问题
-            this.msg = res.qabot_answers.recommend_answers;
-            this.docTextType = 0;
-          } else if (res.reply_type == 2) {
-            this.msgType = 2;
-            this.msg = res.chat_answers.answer;
-          }
-          // 小智得数据状态
-          if (this.msgType === 0 || this.msgType === 4) {
-            this.itempush();
-          } else {
-            this.msglist.push({
-              header: this.header,
-              type: 6,
-              content: "",
-              moreDoc: this.moreDoc,
-              moreIssue: this.moreIssue,
-              me: false,
-              requestId: this.requestId,
-            });
-          }
-        }
+      this.msglist.push({
+        header: this.header,
+        type: 6,
+        content: "",
+        moreDoc: this.moreDoc,
+        moreIssue: this.moreIssue,
+        me: false,
+        requestId: this.requestId,
       });
+      // this.itempush();
+      // getQabotChat(params).then((res) => {
+      //   if (res) {
+      //     this.requestId = res.request_id;
+      //     this.sessionId = res.session_id;
+      //     this.header = "";
+      //     if (res.reply_type == 0 && res.qabot_answers.answers.length > 0) {
+      //       if (type == "2") {
+      //         this.msgType = 2;
+      //       } else {
+      //         this.msgType = 4; // 小智查找到问题相关信息所返回的数据类型
+      //       }
+      //       this.header = res.qabot_answers.answers[0].st_question;
+      //       this.msg = res.qabot_answers.answers[0].answer;
+      //     } else if (
+      //       res.reply_type == 0 &&
+      //       res.qabot_answers.recommend_answers.length > 0
+      //     ) {
+      //       this.msgType = 3; // 小智推荐的问题
+      //       this.msg = res.qabot_answers.recommend_answers;
+      //       this.docTextType = 0;
+      //     } else if (res.reply_type == 2) {
+      //       this.msgType = 2;
+      //       this.msg = res.chat_answers.answer;
+      //     }
+      //     // 小智得数据状态
+      //     if (this.msgType === 0 || this.msgType === 4) {
+      //       console.log(1111);
+      //       this.itempush();
+      //     } else {
+
+      //     }
+      //   }
+      // });
     },
     popClick(msg, i) {
       this.currentIndex = i;
