@@ -58,7 +58,12 @@ export function getGptStreamAnswer(params, successCallback) {
 }
 
 // 获取rag知识库流式回答
-export function getRagStreamAnswer(params, successCallback, errorCallback) {
+export function getRagStreamAnswer(
+  params,
+  successCallback,
+  closeCallback,
+  errorCallback
+) {
   const abortController = new AbortController();
   const signal = abortController.signal;
   fetchEventSource("https://rag.test.osinfra.cn/kb/get_stream_answer", {
@@ -73,6 +78,7 @@ export function getRagStreamAnswer(params, successCallback, errorCallback) {
       successCallback(JSON.parse(event.data));
     },
     onclose: () => {
+      closeCallback();
       abortController.abort();
     },
     onerror: () => {
