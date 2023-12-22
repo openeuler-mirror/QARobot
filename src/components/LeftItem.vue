@@ -1,8 +1,6 @@
 <template>
   <div>
-    <div class="timearea" v-if="zanfeedVis">
-      <span class="lefttime">{{ date }}</span>
-    </div>
+    <div class="time" v-if="zanfeedVis">{{ date }}</div>
     <div class="leftcontainer">
       <div v-if="zanfeedVis" class="headcore">
         <img class="head" src="@/assets/机器人头像.png" />
@@ -311,10 +309,19 @@ export default {
         question: this.question,
         kb_sn: "openEuler_5f09ebb1",
       };
+      let reg = /\bhttps?:\/\/[\w\/\.-]+(?<![.,。，])/g;
+
       getRagStreamAnswer(
         params,
         (res) => {
           this.mdText += res.content;
+          this.aitext = this.md.render(this.mdText);
+          this.$emit("divMove");
+        },
+        () => {
+          this.mdText = this.mdText.replace(reg, (match) => {
+            return match + " ";
+          });
           this.aitext = this.md.render(this.mdText);
           this.$emit("divMove");
         },
@@ -380,18 +387,16 @@ export default {
 </style>
 
 <style lang="scss" scoped>
-.timearea {
+.time {
   height: 44px;
   display: flex;
   justify-content: center;
   align-items: center;
-  .lefttime {
-    font-family: PingFangSC-Regular;
-    font-size: 14px;
-    color: #999999;
-    line-height: 22px;
-    font-weight: 400;
-  }
+  font-family: PingFangSC-Regular;
+  font-size: 14px;
+  color: #999999;
+  line-height: 22px;
+  font-weight: 400;
 }
 .cursorPointer {
   cursor: pointer;
