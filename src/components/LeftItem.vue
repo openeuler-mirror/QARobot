@@ -307,7 +307,7 @@ export default {
     getAnswerByRag() {
       const params = {
         question: this.question,
-        kb_sn: "openEuler_5f09ebb1",
+        kb_sn: "openEuler_e4c80110",
       };
       let reg = /\bhttps?:\/\/[\w\/\.-]+(?<![.,。，])/g;
 

@@ -12,8 +12,6 @@
 </template>
 
 <script setup>
-import { onMounted } from "vue";
-import { ElMessageBox } from "element-plus";
 import Chat from "./components/Chat.vue";
 import AppFooter from "./components/AppFooter.vue";
 </script>
