@@ -1,9 +1,10 @@
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 import axios from "axios";
 
-export function getChatSession() {
+export function generateSession() {
   return axios.get("/rag/session/generate_session");
 }
+
 
 // 获取百川ai流式回答
 export function getBaichuanStreamAnswer(params, successCallback) {

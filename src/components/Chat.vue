@@ -44,6 +44,7 @@
             @click="popClick(item, i)"
           ></li>
         </ul>
+        <div class="delete-button" @click="handleDeleteMsg">删除聊天</div>
         <div class="input-send">
           <van-field
             :border="false"
@@ -169,13 +170,14 @@ import {
   getChatSuggestions,
   getMoreIssues,
   userFeedback,
-  getQabotChat,
   getMoreDoc,
 } from "@/api/post";
 import LeftItem from "@/components/LeftItem";
 import RightItem from "@/components/RightItem";
 import CourpusDialog from "@/components/dialog/CorpusDialog";
 import { debounce } from "@/utils/debounce";
+import { generateSession } from "@/api/assets";
+import { ElMessage } from "element-plus";
 
 export default {
   name: "Chat",
@@ -234,8 +236,37 @@ export default {
     // 从本地存储中读取搜索记录
     this.records = JSON.parse(localStorage.getItem("records")) || [];
     this.searchData = debounce(this.searchData, 500);
+    this.getChatSession();
   },
   methods: {
+    /**
+     * 生成session并保存
+     */
+    getChatSession() {
+      generateSession()
+        .then((res) => {
+          if (res.data) {
+            localStorage.setItem("chatSession", res.data);
+          }
+        })
+        .catch(() => {
+          ElMessage.error("获取session失败");
+        });
+    },
+
+    handleDeleteMsg() {
+      this.getChatSession();
+      this.msglist = [];
+      this.msglist.push({
+        header: this.header,
+        type: 0,
+        content: "",
+        moreDoc: this.moreDoc,
+        moreIssue: this.moreIssue,
+        me: false,
+        requestId: this.requestId,
+      });
+    },
     handleCourpusDialogClose(status) {
       this.isCourpusDialogVisiable = status;
     },
@@ -613,9 +644,24 @@ export default {
         width: 100%;
       }
     }
-    :deep(.bottom) {
+    .bottom {
       position: relative;
       border-top: 1px solid #b7b7b7;
+      .delete-button {
+        position: absolute;
+        top: -35px;
+        right: 15px;
+        background-color: #b7b7b7;
+        padding: 3px 15px;
+        border-radius: 30px;
+        font-size: 14px;
+        color: #ffffff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        user-select: none;
+      }
       .poplist {
         border: 1px solid #c1c1c1;
         border-radius: 4px;

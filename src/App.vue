@@ -15,18 +15,6 @@
 import { onBeforeUnmount } from "vue";
 import Chat from "./components/Chat.vue";
 import AppFooter from "./components/AppFooter.vue";
-import { getChatSession } from "./api/assets";
-import { ElMessage } from "element-plus";
-
-getChatSession()
-  .then((res) => {
-    if (res.data) {
-      localStorage.setItem("chatSession", res.data);
-    }
-  })
-  .catch((err) => {
-    ElMessage.error(err);
-  });
 
 onBeforeUnmount(() => {
   localStorage.removeItem("chatSession");
