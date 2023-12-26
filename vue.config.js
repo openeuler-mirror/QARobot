@@ -5,7 +5,7 @@ module.exports = {
     port: 8080,
     proxy: {
       "/rag": {
-        target: "http://60.204.250.91:8002",
+        target: "https://rag.test.osinfra.cn",
         changeOrigin: true,
         ws: false,
         pathRewrite: {

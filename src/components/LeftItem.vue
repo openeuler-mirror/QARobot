@@ -306,6 +306,7 @@ export default {
     // 通过知识库获取回答
     getAnswerByRag() {
       const params = {
+        session_id: localStorage.getItem("chatSession") || "",
         question: this.question,
         kb_sn: "openEuler_e4c80110",
       };

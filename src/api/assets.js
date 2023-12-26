@@ -1,4 +1,9 @@
 import { fetchEventSource } from "@microsoft/fetch-event-source";
+import axios from "axios";
+
+export function getChatSession() {
+  return axios.get("/rag/session/generate_session");
+}
 
 // 获取百川ai流式回答
 export function getBaichuanStreamAnswer(params, successCallback) {
@@ -75,6 +80,7 @@ export function getRagStreamAnswer(
     signal: signal,
     body: JSON.stringify(params),
     onmessage: (event) => {
+      console.log(event);
       successCallback(JSON.parse(event.data));
     },
     onclose: () => {
