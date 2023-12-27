@@ -44,7 +44,7 @@
             @click="popClick(item, i)"
           ></li>
         </ul>
-        <div class="delete-button" @click="handleDeleteMsg">删除聊天</div>
+        <div class="delete-button" @click="handleDeleteMsg">清除聊天</div>
         <div class="input-send">
           <van-field
             :border="false"
