@@ -8,7 +8,7 @@
     "lint": "vue-cli-service lint --fix"
   },
   "dependencies": {
-    "@element-plus/icons": "^0.0.11",
+    "@element-plus/icons-vue": "^2.3.1",
     "@microsoft/fetch-event-source": "^2.0.1",
     "axios": "^0.19.2",
     "core-js": "^3.8.3",
@@ -17,6 +17,7 @@
     "js-md5": "^0.7.3",
     "markdown-it": "^13.0.1",
     "marked": "^4.3.0",
+    "npm": "^10.2.5",
     "tiny-emitter": "^2.1.0",
     "v-draggable": "0.0.3",
     "vant": "^4.6.3",

@@ -22,6 +22,7 @@
                 :moreDoc="item.moreDoc"
                 :moreIssue="item.moreIssue"
                 :requestId="item.requestId"
+                :isSession="isSession"
                 @badreq="badreq"
                 @getMsg="getMsg"
                 @chatover="chatover"
@@ -44,7 +45,24 @@
             @click="popClick(item, i)"
           ></li>
         </ul>
-        <div class="delete-button" @click="handleDeleteMsg">清除聊天</div>
+        <div class="toolbar">
+          <div class="history" @click="handleHisoryChange">
+            <el-tooltip
+              effect="dark"
+              content="切换是否携带聊天记录"
+              placement="top"
+            >
+              <el-icon :size="18">
+                <ChatLineRound :color="isSession ? '#67C23A' : '#F56C6C'" />
+              </el-icon>
+            </el-tooltip>
+          </div>
+          <div class="delete-button" @click="handleDeleteMsg">
+            <el-tooltip effect="dark" content="清除聊天" placement="top">
+              <el-icon :size="18"> <Delete /> </el-icon>
+            </el-tooltip>
+          </div>
+        </div>
         <div class="input-send">
           <van-field
             :border="false"
@@ -98,18 +116,14 @@
         </div>
       </div>
       <div class="aside_footer">
-        <div class="footer_title">友情链接</div>
+        <div class="footer_title">问卷反馈</div>
         <div
           class="footer_content"
           style="cursor: pointer"
-          @click="
-            gethot(
-              'https://hiss.shixizhi.huawei.com/portal/1643780836745113602?sxz-lang=zh_CN&pageId=1643780840505217026'
-            )
-          "
+          @click="gethot('https://huaweicompute.wjx.cn/vm/mbjAkMI.aspx#')"
         >
-          <img class="footer_content_img" src="@/assets/HISS.png" />
-          <div class="footer_content_word">基础软件服务能力平台</div>
+          <img class="footer_content_img" src="@/assets/questionnaire.png" />
+          <div class="footer_content_word">智能问答问卷调查</div>
         </div>
       </div>
       <div class="aside_search">
@@ -178,10 +192,11 @@ import CourpusDialog from "@/components/dialog/CorpusDialog";
 import { debounce } from "@/utils/debounce";
 import { generateSession } from "@/api/assets";
 import { ElMessage } from "element-plus";
+import { Delete, ChatLineRound } from "@element-plus/icons-vue";
 
 export default {
   name: "Chat",
-  components: { LeftItem, RightItem, CourpusDialog },
+  components: { LeftItem, RightItem, CourpusDialog, Delete, ChatLineRound },
   data: () => {
     return {
       email: "",
@@ -207,6 +222,8 @@ export default {
       docTextType: 0,
       domainIds: domainIds,
       isCourpusDialogVisiable: false,
+      // 是否携带历史 session
+      isSession: true,
     };
   },
   updated() {
@@ -239,6 +256,15 @@ export default {
     this.getChatSession();
   },
   methods: {
+    handleHisoryChange() {
+      this.isSession = !this.isSession;
+      ElMessage({
+        message: `当前模式下,发送消息${
+          !this.isSession ? "不" : ""
+        }会携带之前的聊天记录`,
+        type: `${this.isSession ? "success" : "warning"}`,
+      });
+    },
     /**
      * 生成session并保存
      */
@@ -257,6 +283,10 @@ export default {
     handleDeleteMsg() {
       this.getChatSession();
       this.msglist = [];
+      ElMessage({
+        message: `清除聊天记录`,
+        type: "success",
+      });
       this.msglist.push({
         header: this.header,
         type: 0,
@@ -468,40 +498,6 @@ export default {
         me: false,
         requestId: this.requestId,
       });
-      // this.itempush();
-      // getQabotChat(params).then((res) => {
-      //   if (res) {
-      //     this.requestId = res.request_id;
-      //     this.sessionId = res.session_id;
-      //     this.header = "";
-      //     if (res.reply_type == 0 && res.qabot_answers.answers.length > 0) {
-      //       if (type == "2") {
-      //         this.msgType = 2;
-      //       } else {
-      //         this.msgType = 4; // 小智查找到问题相关信息所返回的数据类型
-      //       }
-      //       this.header = res.qabot_answers.answers[0].st_question;
-      //       this.msg = res.qabot_answers.answers[0].answer;
-      //     } else if (
-      //       res.reply_type == 0 &&
-      //       res.qabot_answers.recommend_answers.length > 0
-      //     ) {
-      //       this.msgType = 3; // 小智推荐的问题
-      //       this.msg = res.qabot_answers.recommend_answers;
-      //       this.docTextType = 0;
-      //     } else if (res.reply_type == 2) {
-      //       this.msgType = 2;
-      //       this.msg = res.chat_answers.answer;
-      //     }
-      //     // 小智得数据状态
-      //     if (this.msgType === 0 || this.msgType === 4) {
-      //       console.log(1111);
-      //       this.itempush();
-      //     } else {
-
-      //     }
-      //   }
-      // });
     },
     popClick(msg, i) {
       this.currentIndex = i;
@@ -647,21 +643,48 @@ export default {
     .bottom {
       position: relative;
       border-top: 1px solid #b7b7b7;
-      .delete-button {
+      height: calc(30% - 80px);
+      .toolbar {
         position: absolute;
         top: -35px;
         right: 15px;
-        background-color: #b7b7b7;
-        padding: 3px 15px;
-        border-radius: 30px;
-        font-size: 14px;
-        color: #ffffff;
         display: flex;
-        justify-content: center;
         align-items: center;
-        cursor: pointer;
-        user-select: none;
+
+        .history {
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          user-select: none;
+          cursor: pointer;
+          background-color: #eee;
+          &:hover {
+            background-color: #e4e4e4;
+          }
+        }
+
+        .delete-button {
+          margin-left: 8px;
+          height: 28px;
+          width: 28px;
+          border-radius: 50%;
+          font-size: 14px;
+          color: #000000;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          cursor: pointer;
+          user-select: none;
+          background-color: #eee;
+          &:hover {
+            background-color: #e4e4e4;
+          }
+        }
       }
+
       .poplist {
         border: 1px solid #c1c1c1;
         border-radius: 4px;
@@ -686,9 +709,11 @@ export default {
         }
       }
       .input-send {
-        .input {
-          .van-field__control {
-            min-height: 88px !important;
+        width: 100%;
+        height: 100%;
+        .van-cell {
+          :deep(.van-field__control) {
+            --van-field-text-area-min-height: 100px;
             &:hover {
               overflow-y: auto;
             }
@@ -714,6 +739,7 @@ export default {
             }
           }
         }
+
         .bottomBtn {
           display: flex;
           justify-content: flex-end;
@@ -802,7 +828,8 @@ export default {
         margin-bottom: 10px;
       }
       .footer_content_img {
-        margin: 16px 156px 6px 27px;
+        width: 70px;
+        height: 70px;
       }
       .footer_content_word {
         font-family: PingFangSC-Regular;

@@ -5,7 +5,6 @@ export function generateSession() {
   return axios.get("/rag/session/generate_session");
 }
 
-
 // 获取百川ai流式回答
 export function getBaichuanStreamAnswer(params, successCallback) {
   const abortController = new AbortController();
@@ -81,15 +80,14 @@ export function getRagStreamAnswer(
     signal: signal,
     body: JSON.stringify(params),
     onmessage: (event) => {
-      console.log(event);
       successCallback(JSON.parse(event.data));
     },
     onclose: () => {
       closeCallback();
       abortController.abort();
     },
-    onerror: () => {
-      errorCallback();
+    onerror: (err) => {
+      errorCallback(err);
       abortController.abort();
     },
   });
