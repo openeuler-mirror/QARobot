@@ -71,24 +71,28 @@ export function getRagStreamAnswer(
 ) {
   const abortController = new AbortController();
   const signal = abortController.signal;
-  fetchEventSource("https://rag.test.osinfra.cn/kb/get_stream_answer", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    openWhenHidden: true,
-    signal: signal,
-    body: JSON.stringify(params),
-    onmessage: (event) => {
-      successCallback(JSON.parse(event.data));
-    },
-    onclose: () => {
-      closeCallback();
-      abortController.abort();
-    },
-    onerror: (err) => {
-      errorCallback(err);
-      abortController.abort();
-    },
-  });
+  const eventSource = fetchEventSource(
+    "https://rag.test.osinfra.cn/kb/get_stream_answer",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      openWhenHidden: true,
+      signal: signal,
+      body: JSON.stringify(params),
+      onmessage: (event) => {
+        successCallback(JSON.parse(event.data));
+      },
+      onclose: () => {
+        closeCallback();
+        abortController.abort();
+      },
+      onerror: (err) => {
+        errorCallback(err);
+        abortController.abort();
+        eventSource.close();
+      },
+    }
+  );
 }

@@ -407,7 +407,7 @@ export default {
 .leftcontainer {
   display: flex;
   padding: 10px 15px;
-  margin-right: 60px;
+  margin-right: 85px;
 
   .headcore {
     margin-left: 15px;

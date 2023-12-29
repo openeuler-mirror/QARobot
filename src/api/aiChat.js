@@ -13,7 +13,6 @@ export function getAiChat(url, params, successCallback, errCallback) {
     body: JSON.stringify(params),
     // success callback
     onmessage(msg) {
-      console.log(msg);
       successCallback(msg);
     },
     // fail callbak

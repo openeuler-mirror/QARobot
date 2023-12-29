@@ -73,15 +73,15 @@
             @input="searchData"
             @keydown="listen($event)"
           />
-          <div class="bottomBtn">
-            <el-button
-              class="send"
-              :class="[!isDisabled ? 'active' : '']"
-              @click="send"
-              :disabled="isDisabled"
-              >发送</el-button
-            >
-          </div>
+        </div>
+        <div class="bottomBtn">
+          <el-button
+            class="send"
+            :class="[!isDisabled ? 'active' : '']"
+            @click="send"
+            :disabled="isDisabled"
+            >发送</el-button
+          >
         </div>
       </div>
     </div>
@@ -117,16 +117,12 @@
       </div>
       <div class="aside_footer">
         <div class="footer_title">问卷反馈</div>
-        <div class="footer_content" style="cursor: pointer">
-          <el-popover ref="popover" placement="top">
-            <template #reference>
-              <img class="footer_content_img" src="@/assets/qrcode.jpg" />
-            </template>
-            <template #default>
-              <img class="footer_content_img-inner" src="@/assets/qrcode.jpg" />
-            </template>
-          </el-popover>
-
+        <div
+          class="footer_content"
+          style="cursor: pointer"
+          @click="gethot('https://huaweicompute.wjx.cn/vm/mbjAkMl.aspx')"
+        >
+          <img class="footer_content_img" src="@/assets/questionnaire.png" />
           <div class="footer_content_word">智能问答问卷调查</div>
         </div>
       </div>
@@ -435,7 +431,7 @@ export default {
         if (!records.includes(record)) {
           records.unshift(record);
         }
-        localStorage.setItem("records", JSON.stringify(records.slice(0, 3)));
+        localStorage.setItem("records", JSON.stringify(records.slice(0, 5)));
         // 从本地存储中读取搜索记录
         this.records = JSON.parse(localStorage.getItem("records")) || [];
         this.msglist.push({
@@ -573,11 +569,11 @@ export default {
 
 <style lang="scss" scoped>
 .appclass {
+  height: 100vh;
   display: flex;
   padding: 50px 50px 20px 50px;
   .maincontainer {
     width: calc(100% - 300px);
-    height: 870px;
     background: #ffffff;
     box-shadow: 0px 0px 14px rgba(51, 51, 51, 0.16);
     opacity: 1;
@@ -715,6 +711,7 @@ export default {
       .input-send {
         width: 100%;
         height: 100%;
+        position: relative;
         .van-cell {
           :deep(.van-field__control) {
             --van-field-text-area-min-height: 100px;
@@ -743,26 +740,27 @@ export default {
             }
           }
         }
-
-        .bottomBtn {
-          display: flex;
-          justify-content: flex-end;
-          .send {
-            width: 136px;
-            height: 48px;
-            border: 0;
-            background: #d7d7d7;
-            border-radius: 4px;
-            font-family: PingFangSC-Regular;
-            font-size: 18px;
-            color: #ffffff;
-            text-align: center;
-            line-height: 24px;
-            font-weight: 400;
-            margin-right: 20px;
-            &.active {
-              background: #002fa7;
-            }
+      }
+      .bottomBtn {
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+        display: flex;
+        justify-content: flex-end;
+        .send {
+          width: 100px;
+          height: 40px;
+          border: 0;
+          background: #d7d7d7;
+          border-radius: 4px;
+          font-family: PingFangSC-Regular;
+          font-size: 18px;
+          color: #ffffff;
+          text-align: center;
+          line-height: 24px;
+          font-weight: 400;
+          &.active {
+            background: #002fa7;
           }
         }
       }
@@ -770,9 +768,28 @@ export default {
   }
   .aside {
     width: 300px;
-    height: 870px;
     background: #ffffff;
     box-shadow: 0px 0px 14px rgba(51, 51, 51, 0.16);
+    overflow-y: scroll;
+    &::-webkit-scrollbar {
+      width: 6px;
+      color: transparent;
+    }
+
+    &::-webkit-scrollbar-track {
+      margin: -17px 0 -25px 0;
+      border-radius: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(136, 153, 152, 0.3);
+      border-radius: 5px;
+    }
+
+    &::-webkit-scrollbar-button {
+      background-color: transparent;
+      border-radius: 5px;
+    }
     .aside_header {
       width: 80px;
       font-weight: 600;
@@ -781,7 +798,7 @@ export default {
       color: #000000;
       line-height: 24px;
       text-align: center;
-      margin: 40px 25px 16px 21px;
+      margin: 10px 25px 16px 21px;
       display: inline-block;
     }
     .aside_content {
@@ -820,7 +837,7 @@ export default {
       }
     }
     .aside_footer {
-      margin: 30px 25px 16px 30px;
+      margin: 10px 25px 16px 30px;
       .footer_title {
         font-weight: 600;
         font-family: PingFangSC-Regular;
@@ -832,14 +849,9 @@ export default {
         margin-bottom: 10px;
       }
       .footer_content_img {
-        width: 80px;
-        height: 80px;
+        width: 70px;
+        height: 70px;
       }
-      .footer_content_img-inner {
-        width: 100px;
-        height: 100px;
-      }
-
       .footer_content_word {
         font-family: PingFangSC-Regular;
         font-size: 12px;
