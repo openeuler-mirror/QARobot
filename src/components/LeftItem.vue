@@ -224,6 +224,7 @@ export default {
     "moreIssue",
     "question",
     "requestId",
+    "isSession",
   ],
   emits: ["divMove", "getMsg", "badreq"],
   data: () => {
@@ -306,10 +307,11 @@ export default {
     // 通过知识库获取回答
     getAnswerByRag() {
       const params = {
-        session_id: localStorage.getItem("chatSession") || "",
         question: this.question,
         kb_sn: "openEuler_e4c80110",
       };
+      this.isSession &&
+        (params["session_id"] = localStorage.getItem("chatSession"));
       let reg = /\bhttps?:\/\/[\w\/\.-]+(?<![.,。，])/g;
 
       getRagStreamAnswer(
@@ -326,7 +328,7 @@ export default {
           this.aitext = this.md.render(this.mdText);
           this.$emit("divMove");
         },
-        () => {
+        (err) => {
           this.aitext = this.md.render("Network error");
           this.$emit("divMove");
         }
