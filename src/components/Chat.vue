@@ -117,12 +117,16 @@
       </div>
       <div class="aside_footer">
         <div class="footer_title">问卷反馈</div>
-        <div
-          class="footer_content"
-          style="cursor: pointer"
-          @click="gethot('https://huaweicompute.wjx.cn/vm/mbjAkMI.aspx#')"
-        >
-          <img class="footer_content_img" src="@/assets/questionnaire.png" />
+        <div class="footer_content" style="cursor: pointer">
+          <el-popover ref="popover" placement="top">
+            <template #reference>
+              <img class="footer_content_img" src="@/assets/qrcode.jpg" />
+            </template>
+            <template #default>
+              <img class="footer_content_img-inner" src="@/assets/qrcode.jpg" />
+            </template>
+          </el-popover>
+
           <div class="footer_content_word">智能问答问卷调查</div>
         </div>
       </div>
@@ -828,9 +832,14 @@ export default {
         margin-bottom: 10px;
       }
       .footer_content_img {
-        width: 70px;
-        height: 70px;
+        width: 80px;
+        height: 80px;
       }
+      .footer_content_img-inner {
+        width: 100px;
+        height: 100px;
+      }
+
       .footer_content_word {
         font-family: PingFangSC-Regular;
         font-size: 12px;
