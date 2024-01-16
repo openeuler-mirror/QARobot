@@ -308,7 +308,7 @@ export default {
     getAnswerByRag() {
       const params = {
         question: this.question,
-        kb_sn: "openEuler_e4c80110",
+        user_selected_descriptions: [],
       };
       this.isSession &&
         (params["session_id"] = localStorage.getItem("chatSession"));

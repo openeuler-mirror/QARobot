@@ -2,7 +2,20 @@ import { fetchEventSource } from "@microsoft/fetch-event-source";
 import axios from "axios";
 
 export function generateSession() {
-  return axios.get("/rag/session/generate_session");
+  return axios({
+    method: "GET",
+    headers: { user: JSON.stringify({ userName: "openEuler" }) },
+    url: "/rag/generate_session",
+  });
+}
+
+export function clearSession(session_id) {
+  return axios({
+    method: "POST",
+    headers: { user: JSON.stringify({ userName: "openEuler" }) },
+    url: "/rag/clear_session",
+    params: { session_id: session_id },
+  });
 }
 
 // 获取百川ai流式回答
@@ -72,11 +85,12 @@ export function getRagStreamAnswer(
   const abortController = new AbortController();
   const signal = abortController.signal;
   const eventSource = fetchEventSource(
-    "https://rag.test.osinfra.cn/kb/get_stream_answer",
+    "https://rag.test.osinfra.cn/kb/natural_language",
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        user: JSON.stringify({ userName: "openEuler" }),
       },
       openWhenHidden: true,
       signal: signal,

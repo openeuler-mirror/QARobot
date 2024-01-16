@@ -272,7 +272,7 @@ export default {
       generateSession()
         .then((res) => {
           if (res.data) {
-            localStorage.setItem("chatSession", res.data);
+            localStorage.setItem("chatSession", res.data.result.sesseion_id);
           }
         })
         .catch(() => {
